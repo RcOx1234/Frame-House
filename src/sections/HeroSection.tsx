@@ -209,7 +209,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
             className="absolute left-1/2 top-[15%] -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[78vh] phone-frame z-20"
           >
             <img 
-              src="/images/vertical-creator.jpg" 
+              src="/Frame-House/images/vertical-creator.jpg" 
               alt="Vertical Content"
               className="w-full h-full object-cover"
             />
