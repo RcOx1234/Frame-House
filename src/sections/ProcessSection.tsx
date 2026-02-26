@@ -120,7 +120,7 @@ export default function ProcessSection() {
           className="w-[60vw] h-[35vh] phone-frame mb-6"
         >
           <img 
-            src="/images/process-camera.jpg" 
+            src="/Frame-House/images/process-camera.jpg" 
             alt="Production Process"
             className="w-full h-full object-cover"
           />
@@ -171,7 +171,7 @@ export default function ProcessSection() {
           className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[78vh] phone-frame z-20"
         >
           <img 
-            src="/images/process-camera.jpg" 
+            src="/Frame-House/images/process-camera.jpg" 
             alt="Production Process"
             className="w-full h-full object-cover"
           />

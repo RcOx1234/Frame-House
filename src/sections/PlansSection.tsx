@@ -215,7 +215,7 @@ export default function PlansSection() {
           className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[78vh] phone-frame z-20"
         >
           <img 
-            src="/images/plan-growth.jpg" 
+            src="/Frame-House/images/plan-growth.jpg" 
             alt="Growth Plan"
             className="absolute inset-0 w-full h-full object-cover"
           />

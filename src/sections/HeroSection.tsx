@@ -115,7 +115,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           ref={bgRef}
           className="absolute inset-0"
           style={{
-            backgroundImage: 'url(/images/hero-creator.jpg)',
+            backgroundImage: 'url(/Frame-House/images/hero-creator.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -159,7 +159,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
             className="w-[70vw] h-[45vh] phone-frame mb-6"
           >
             <img 
-              src="/images/vertical-creator.jpg" 
+              src="/Frame-House/images/vertical-creator.jpg" 
               alt="Vertical Content"
               className="w-full h-full object-cover"
             />
@@ -206,7 +206,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           {/* Center Phone Frame */}
           <div 
             ref={phoneRef}
-            className="absolute left-1/2 top-[15%] -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[78vh] phone-frame z-20"
+            className="absolute left-1/2 top-[50%] -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[78vh] phone-frame z-20"
           >
             <img 
               src="/Frame-House/images/vertical-creator.jpg" 
