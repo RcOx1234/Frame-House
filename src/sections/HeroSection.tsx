@@ -3,6 +3,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronDown, Menu } from 'lucide-react';
 import QuoteModal from '../components/QuoteModal';
+import { useNavigate } from "react-router-dom";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +21,9 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
   const navRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
+  const navigate = useNavigate();
+  
+
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
@@ -139,9 +144,9 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
               <Menu className="w-5 h-5 md:hidden" />
               <span className="hidden md:inline">MENU</span>
             </button>
-          <a /*href="Menu.html"*/ href='#contact'>
+          <a /*href="Menu.html"*/>
               <button
-              /*onClick={() => setQuoteModalOpen(true)}/*/
+                onClick={() => navigate('/plan-personalizado')}
               className="btn-primary text-xs md:text-sm px-3 py-2 md:px-6 md:py-3"
             >
               <span className="hidden md:inline">Solicitar cotización</span>

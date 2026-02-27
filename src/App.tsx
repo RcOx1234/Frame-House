@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Toaster } from 'sonner';
+import { Routes, Route } from 'react-router-dom';
 
 import HeroSection from './sections/HeroSection';
 import ServicesSection from './sections/ServicesSection';
@@ -12,16 +13,17 @@ import PortfolioSection from './sections/PortfolioSection';
 import TestimonialsSection from './sections/TestimonialsSection';
 import ContactSection from './sections/ContactSection';
 import MenuOverlay from './components/MenuOverlay';
+import PlanPersonalizado from './components/PlanPersonalizado';
 
 import './App.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function App() {
+// Página principal (todo tu código original)
+function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Wait for all sections to mount and create their ScrollTriggers
     const timer = setTimeout(() => {
       const pinned = ScrollTrigger.getAll()
         .filter(st => st.vars.pin)
@@ -31,32 +33,26 @@ function App() {
       
       if (!maxScroll || pinned.length === 0) return;
 
-      // Build ranges and snap targets from pinned sections
       const pinnedRanges = pinned.map(st => ({
         start: st.start / maxScroll,
         end: (st.end ?? st.start) / maxScroll,
         center: (st.start + ((st.end ?? st.start) - st.start) * 0.5) / maxScroll,
       }));
 
-      // Create global snap - only snap when close to a pinned section center
       ScrollTrigger.create({
         snap: {
           snapTo: (value: number) => {
-            // Check if within any pinned range (with small buffer)
             const inPinned = pinnedRanges.some(
               r => value >= r.start - 0.05 && value <= r.end + 0.05
             );
             
-            // If not in a pinned section, allow free scroll
             if (!inPinned) return value;
 
-            // Find nearest pinned center
             const target = pinnedRanges.reduce((closest, r) =>
               Math.abs(r.center - value) < Math.abs(closest - value) ? r.center : closest,
               pinnedRanges[0]?.center ?? 0
             );
 
-            // Only snap if we're reasonably close to the target
             const distance = Math.abs(target - value);
             if (distance > 0.15) return value;
 
@@ -74,7 +70,6 @@ function App() {
     };
   }, []);
 
-  // Handle escape key to close menu
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && menuOpen) {
@@ -88,10 +83,8 @@ function App() {
 
   return (
     <div className="relative bg-charcoal min-h-screen">
-      {/* Grain Overlay */}
       <div className="grain-overlay" />
 
-      {/* Toast notifications */}
       <Toaster 
         position="top-center"
         toastOptions={{
@@ -103,10 +96,8 @@ function App() {
         }}
       />
 
-      {/* Menu Overlay */}
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Main Content */}
       <main className="relative">
         <HeroSection onMenuOpen={() => setMenuOpen(true)} />
         <div id="services">
@@ -124,6 +115,16 @@ function App() {
         <ContactSection />
       </main>
     </div>
+  );
+}
+
+// App con rutas
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/plan-personalizado" element={<PlanPersonalizado />} />
+    </Routes>
   );
 }
 

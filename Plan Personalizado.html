@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea tu propio plan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #111111 50%, #0d0d0d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: rgba(22, 22, 22, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 18px;
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 460px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 
+                0 20px 40px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.02);
+            animation: slideUp 0.5s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Botón Home */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 42px;
+            height: 42px;
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 10;
+        }
+
+        .home-btn:hover {
+            background: rgba(201, 110, 79, 0.2);
+            border-color: rgba(201, 110, 79, 0.4);
+            transform: scale(1.1);
+        }
+
+        .home-btn svg {
+            width: 20px;
+            height: 20px;
+            color: #888;
+            transition: color 0.3s ease;
+        }
+
+        .home-btn:hover svg {
+            color: #c96e4f;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            font-size: 26px;
+            margin-bottom: 24px;
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: -0.3px;
+            padding-right: 50px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            color: #666;
+            font-size: 13px;
+            font-weight: 400;
+            margin-bottom: 6px;
+            transition: color 0.3s ease;
+        }
+
+        .form-group:focus-within label {
+            color: #c96e4f;
+        }
+
+        input[type="text"], 
+        input[type="email"], 
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(18, 18, 18, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="text"]::placeholder, 
+        input[type="email"]::placeholder {
+            color: #555;
+            font-weight: 300;
+        }
+
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        input:hover, select:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(22, 22, 22, 0.95);
+        }
+
+        input:focus, select:focus {
+            border-color: #c96e4f;
+            background: rgba(22, 22, 22, 1);
+            box-shadow: 0 0 0 3px rgba(201, 110, 79, 0.08);
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 10px;
+            font-size: 15px;
+        }
+
+        .products-section {
+            margin: 20px 0;
+            padding: 18px;
+            background: rgba(18, 18, 18, 0.5);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .products-title {
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 14px;
+            font-weight: 500;
+            letter-spacing: -0.2px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px;
+            background: rgba(28, 28, 28, 0.6);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #c96e4f;
+            transform: scaleY(0);
+            transition: transform 0.25s ease;
+        }
+
+        .product-item:hover {
+            background: rgba(32, 32, 32, 0.7);
+            border-color: rgba(201, 110, 79, 0.2);
+            transform: translateX(4px);
+        }
+
+        .product-item.selected {
+            background: rgba(201, 110, 79, 0.06);
+            border-color: rgba(201, 110, 79, 0.3);
+        }
+
+        .product-item.selected::before {
+            transform: scaleY(1);
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            pointer-events: none;
+        }
+
+        .custom-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .product-item.selected .custom-checkbox {
+            background: #c96e4f;
+            border-color: #c96e4f;
+        }
+
+        .custom-checkbox svg {
+            width: 11px;
+            height: 11px;
+            color: white;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.2s ease;
+        }
+
+        .product-item.selected .custom-checkbox svg {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .product-name {
+            color: #b0b0b0;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        .product-item.selected .product-name {
+            color: #e0e0e0;
+        }
+
+        .product-price {
+            color: #c96e4f;
+            font-weight: 600;
+            font-size: 14px;
+            margin-left: 8px;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .summary {
+            margin-top: 20px;
+            padding: 18px;
+            background: rgba(201, 110, 79, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(201, 110, 79, 0.12);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        .summary-row.total {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .summary-row.total span:last-child {
+            color: #c96e4f;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn-cotizar {
+            width: 100%;
+            padding: 16px 20px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #c96e4f 0%, #a85a3c 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-cotizar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-cotizar:hover::before {
+            left: 100%;
+        }
+
+        .btn-cotizar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(201, 110, 79, 0.25);
+        }
+
+        .btn-cotizar:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-cotizar svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-cotizar:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* Mensajes animados desde la izquierda */
+        .message {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translate(-100%, -50%);
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 28px;
+            border-radius: 0 12px 12px 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 4px solid #c96e4f;
+            box-shadow: 10px 0 40px rgba(0,0,0,0.4);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 320px;
+        }
+
+        .message.show {
+            transform: translate(0, -50%);
+            opacity: 1;
+        }
+
+        .message-title {
+            color: #c96e4f;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .message-text {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+            
+            .container {
+                padding: 24px 18px;
+                border-radius: 16px;
+                max-width: 100%;
+            }
+            
+            .home-btn {
+                width: 38px;
+                height: 38px;
+                top: 18px;
+                right: 18px;
+            }
+            
+            h1 {
+                font-size: 22px;
+                margin-bottom: 20px;
+                padding-right: 45px;
+            }
+            
+            .products-section {
+                padding: 14px;
+            }
+            
+            input, select {
+                font-size: 16px;
+                padding: 13px 14px;
+            }
+
+            .message {
+                max-width: 280px;
+                padding: 16px 20px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .error-shake {
+            animation: shake 0.5s;
+            border-color: #ff4444 !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Botón Home -->
+    <a href="/" class="home-btn" title="Volver al inicio">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </a>
+
+    <div class="container">
+        <h1>Crea tu propio plan</h1>
+        
+        <div class="contact-fields">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" placeholder="Tu nombre">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="tu@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="empresa">Empresa</label>
+                <input type="text" id="empresa" placeholder="Nombre empresa (opcional)">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="plan">Selecciona tu plan</label>
+            <select id="plan">
+                <option value="">-- Elige un plan --</option>
+                <option value="basico" data-price="500" data-name="Plan Básico">Plan Básico - $500</option>
+                <option value="profesional" data-price="1500" data-name="Plan Profesional">Plan Profesional - $1,500</option>
+                <option value="estudio" data-price="3000" data-name="Plan Estudio">Plan Estudio - $3,000</option>
+            </select>
+        </div>
+
+        <div class="products-section">
+            <h3 class="products-title">Productos adicionales</h3>
+            
+            <div class="products-grid" id="products-container">
+                <!-- Los productos se generan dinámicamente -->
+            </div>
+        </div>
+
+        <div class="summary">
+            <div class="summary-row">
+                <span>Plan seleccionado:</span>
+                <span id="plan-nombre">Ninguno</span>
+            </div>
+            <div class="summary-row">
+                <span>Subtotal plan:</span>
+                <span id="plan-total">$0</span>
+            </div>
+            <div class="summary-row">
+                <span>Adicionales:</span>
+                <span id="productos-total">$0</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total estimado</span>
+                <span id="total-general">$0</span>
+            </div>
+        </div>
+
+        <button type="button" class="btn-cotizar" id="btnCotizar">
+            <span>Copiar detalles del plan</span>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Mensajes -->
+    <div class="message" id="msg-contacto">
+        <div class="message-title">¡Plan copiado!</div>
+        <div class="message-text">Contáctanos en la página de inicio con los detalles de tu plan</div>
+    </div>
+
+    <div class="message" id="msg-copiado">
+        <div class="message-title">Portapapeles</div>
+        <div class="message-text">Los detalles de tu plan se han copiado al portapapeles</div>
+    </div>
+
+    <script>
+        // Configuración de productos
+        const productos = [
+            { id: 'prod1', nombre: 'Producto adicional 1', precio: 150 },
+            { id: 'prod2', nombre: 'Producto adicional 2', precio: 300 },
+            { id: 'prod3', nombre: 'Producto adicional 3', precio: 450 },
+            { id: 'prod4', nombre: 'Producto adicional 4', precio: 200 },
+            { id: 'prod5', nombre: 'Producto adicional 5', precio: 350 },
+            { id: 'prod6', nombre: 'Producto adicional 6', precio: 500 },
+        ];
+
+        function renderProductos() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = productos.map(prod => `
+                <div class="product-item" onclick="toggleProduct('${prod.id}')" id="item-${prod.id}">
+                    <div class="product-info">
+                        <div class="custom-checkbox">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <span class="product-name">${prod.nombre}</span>
+                    </div>
+                    <span class="product-price">$${prod.precio.toLocaleString()}</span>
+                    <input type="checkbox" id="${prod.id}" data-price="${prod.precio}" data-name="${prod.nombre}" style="display: none;" onchange="calcularTotal()">
+                </div>
+            `).join('');
+        }
+
+        function toggleProduct(id) {
+            const checkbox = document.getElementById(id);
+            const item = document.getElementById('item-' + id);
+            checkbox.checked = !checkbox.checked;
+            item.classList.toggle('selected', checkbox.checked);
+            calcularTotal();
+        }
+
+        function calcularTotal() {
+            let planTotal = 0;
+            let productosTotal = 0;
+            let planNombre = 'Ninguno';
+
+            const planSelect = document.getElementById('plan');
+            const selectedOption = planSelect.options[planSelect.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                planTotal = parseInt(selectedOption.getAttribute('data-price')) || 0;
+                planNombre = selectedOption.getAttribute('data-name') || selectedOption.value;
+            }
+
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const price = parseInt(checkbox.getAttribute('data-price')) || 0;
+                    productosTotal += price;
+                }
+            });
+
+            document.getElementById('plan-nombre').textContent = planNombre;
+            document.getElementById('plan-total').textContent = '$' + planTotal.toLocaleString();
+            document.getElementById('productos-total').textContent = '$' + productosTotal.toLocaleString();
+            
+            const total = planTotal + productosTotal;
+            document.getElementById('total-general').textContent = '$' + total.toLocaleString();
+        }
+
+        function mostrarMensaje(id) {
+            const msg = document.getElementById(id);
+            msg.classList.add('show');
+            
+            setTimeout(() => {
+                msg.classList.remove('show');
+            }, 4000);
+        }
+
+        async function copiarAlPortapapeles() {
+            const nombre = document.getElementById('nombre').value.trim() || 'No especificado';
+            const email = document.getElementById('email').value.trim() || 'No especificado';
+            const empresa = document.getElementById('empresa').value.trim() || 'No especificado';
+            
+            const planSelect = document.getElementById('plan');
+            const selectedOption = planSelect.options[planSelect.selectedIndex];
+            
+            if (!selectedOption.value) {
+                planSelect.classList.add('error-shake');
+                setTimeout(() => planSelect.classList.remove('error-shake'), 500);
+                return;
+            }
+
+            const planNombre = selectedOption.getAttribute('data-name');
+            const planPrecio = selectedOption.getAttribute('data-price');
+
+            // Obtener productos seleccionados
+            let productosSeleccionados = [];
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const prodNombre = checkbox.getAttribute('data-name');
+                    const prodPrecio = checkbox.getAttribute('data-price');
+                    productosSeleccionados.push(`• ${prodNombre}: $${parseInt(prodPrecio).toLocaleString()}`);
+                }
+            });
+
+            const productosTexto = productosSeleccionados.length > 0 
+                ? productosSeleccionados.join('\n') 
+                : '• Ninguno';
+
+            const total = document.getElementById('total-general').textContent;
+
+            const texto = `═══════════════════════════════════════
+    COTIZACIÓN DE PLAN PERSONALIZADO
+═══════════════════════════════════════
+
+📋 DATOS DEL CLIENTE:
+Nombre: ${nombre}
+Email: ${email}
+Empresa: ${empresa}
+
+📦 PLAN SELECCIONADO:
+${planNombre} - $${parseInt(planPrecio).toLocaleString()}
+
+➕ PRODUCTOS ADICIONALES:
+${productosTexto}
+
+💰 TOTAL ESTIMADO: ${total}
+
+═══════════════════════════════════════
+Generado el: ${new Date().toLocaleString('es-ES')}
+`;
+
+            try {
+                await navigator.clipboard.writeText(texto);
+                
+                // Mostrar ambos mensajes secuencialmente
+                mostrarMensaje('msg-copiado');
+                setTimeout(() => {
+                    mostrarMensaje('msg-contacto');
+                }, 2000);
+                
+            } catch (err) {
+                // Fallback para navegadores antiguos
+                const textarea = document.createElement('textarea');
+                textarea.value = texto;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    mostrarMensaje('msg-copiado');
+                    setTimeout(() => {
+                        mostrarMensaje('msg-contacto');
+                    }, 2000);
+                } catch (err) {
+                    alert('No se pudo copiar automáticamente. Por favor selecciona y copia manualmente.');
+                }
+                
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('plan').addEventListener('change', calcularTotal);
+        document.getElementById('btnCotizar').addEventListener('click', copiarAlPortapapeles);
+
+        // Inicializar
+        renderProductos();
+        calcularTotal();
+    </script>
+</body>
+</html>
