@@ -10,19 +10,19 @@ const testimonials = [
     quote: 'Convirtieron nuestros lanzamientos de producto en un sistema de contenido.',
     author: 'A. R.',
     role: 'CMO',
-    avatar: '/Frame-House/images/avatar-1.jpg'
+    avatar: `${import.meta.env.BASE_URL}images/avatar-1.jpg`
   },
   {
     quote: 'El turnaround más rápido que hemos tenido—sin sacrificar calidad.',
     author: 'M. T.',
     role: 'Founder',
-    avatar: '/Frame-House/images/avatar-2.jpg'
+    avatar: `${import.meta.env.BASE_URL}images/avatar-2.jpg`
   },
   {
     quote: 'Nuestros anuncios finalmente se ven como la marca que queremos ser.',
     author: 'S. L.',
     role: 'Head of Growth',
-    avatar: '/Frame-House/images/avatar-3.jpg'
+    avatar: `${import.meta.env.BASE_URL}images/avatar-3.jpg`
   }
 ];
 

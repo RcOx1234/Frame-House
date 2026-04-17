@@ -16,8 +16,8 @@ const projects = [
   {
     title: 'Bolones Picapiedra',
     tag: 'Video Prom',
-    image: '/Frame-House/images/portfolio-2.jpg',
-    videoUrl: '/Frame-House/videos/Ojos-asi.mp4'
+    image: `${import.meta.env.BASE_URL}images/portfolio-2.jpg`,
+    videoUrl: `${import.meta.env.BASE_URL}videos/Ojos-asi.mp4`
   }
 ];
 

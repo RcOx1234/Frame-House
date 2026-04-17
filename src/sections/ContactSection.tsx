@@ -117,7 +117,7 @@ export default function ContactSection() {
         ref={bgRef}
         className="absolute inset-0"
         style={{
-          backgroundImage: 'url(/Frame-House/images/contact-background.jpg)',
+          backgroundImage: `url(${import.meta.env.BASE_URL}images/contact-background.jpg)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

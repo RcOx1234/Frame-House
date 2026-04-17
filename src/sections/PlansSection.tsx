@@ -215,9 +215,10 @@ export default function PlansSection() {
           className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[78vh] phone-frame z-20"
         >
           <img 
-            src="/Frame-House/images/plan-growth.jpg" 
+            src={`${import.meta.env.BASE_URL}images/plan-growth.jpg`} 
             alt="Growth Plan"
             className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => console.error('Image failed to load:', e)}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D10] via-[#0B0D10]/70 to-transparent" />
           
