@@ -136,7 +136,7 @@ export default function MetricsSection() {
                   ref={el => { chartsRef.current[index] = el; }}
                   d={metric.chartPath}
                   fill="none"
-                  stroke="#B85C38"
+                  stroke="#D12C3B"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"

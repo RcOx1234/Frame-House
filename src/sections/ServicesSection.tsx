@@ -80,38 +80,41 @@ export default function ServicesSection() {
   return (
     <section 
       ref={sectionRef} 
-      className="section-flowing bg-charcoal z-20 py-16 md:py-[12vh]"
+      className="section-flowing z-20 border-y border-black/5 bg-[#EDE6DA] py-16 text-[#1A0A0F] md:py-[12vh]"
     >
       <div className="px-6 md:px-[7vw]">
+        <p className="label-mono mb-4 text-[#5C4A45]">Servicios</p>
         {/* Heading */}
         <h2 
           ref={headingRef}
-          className="headline-lg text-off-white mb-10 md:mb-16 max-w-full md:max-w-[40vw] text-2xl md:text-inherit"
+          className="headline-lg mb-10 max-w-full text-[#1A0A0F] md:mb-16 md:max-w-[46vw] text-2xl md:text-inherit"
         >
           Producción full-service para marcas que se mueven rápido.
         </h2>
 
         {/* Service Cards - Mobile: Stack, Desktop: Row */}
-        <div className="flex flex-col md:flex-row gap-6 md:gap-6 md:justify-between">
+        <div className="flex flex-col gap-6 md:flex-row md:justify-between md:gap-6">
           {services.map((service, index) => (
             <div
               key={service.title}
               ref={el => { cardsRef.current[index] = el; }}
-              className="service-card w-full md:w-[26vw] md:h-[54vh] flex flex-col p-6 md:p-8"
+              className="group flex w-full flex-col rounded-[22px] border border-black/[0.08] bg-white/80 p-6 shadow-[0_18px_50px_-24px_rgba(26,10,15,0.35)] backdrop-blur-sm transition-all duration-300 hover:border-[#D12C3B]/25 hover:bg-white md:h-[54vh] md:w-[26vw] md:p-8"
             >
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-burnt-orange/20 flex items-center justify-center mb-6 md:mb-8">
-                <service.icon className="w-6 h-6 md:w-7 md:h-7 text-burnt-orange" />
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[#D12C3B]/12 md:mb-8 md:h-14 md:w-14">
+                <service.icon className="h-6 w-6 text-[#B01828] md:h-7 md:w-7" />
               </div>
               
-              <h3 className="font-heading font-bold text-xl md:text-2xl text-off-white mb-4 md:mb-6 tracking-wide">
+              <h3 className="font-heading mb-4 text-xl font-bold tracking-wide text-[#1A0A0F] md:mb-6 md:text-2xl">
                 {service.title}
               </h3>
               
-              <ul className="space-y-2 md:space-y-3 flex-1">
-                {service.items.map((item) => (
-                  <li key={item} className="text-muted-warm flex items-center gap-3 text-sm md:text-base">
-                    <span className="w-1.5 h-1.5 rounded-full bg-burnt-orange flex-shrink-0" />
-                    {item}
+              <ul className="flex-1 space-y-2 md:space-y-3">
+                {service.items.map((item, i) => (
+                  <li key={item} className="flex items-start gap-3 text-sm text-[#3D2F2C] md:text-base">
+                    <span className="mt-1.5 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-[#D12C3B]/30 bg-[#D12C3B]/8 font-mono text-[10px] font-bold text-[#A01828]">
+                      {i + 1}
+                    </span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
@@ -122,11 +125,11 @@ export default function ServicesSection() {
         {/* Link */}
         <div className="mt-8 md:mt-12">
           <a 
-            href="#portfolio" 
-            className="inline-flex items-center gap-2 text-burnt-orange hover:text-off-white transition-colors font-medium group text-sm md:text-base"
+            href="#portfolio-spotlight" 
+            className="group inline-flex items-center gap-2 text-sm font-semibold text-[#A01828] transition-colors hover:text-[#1A0A0F] md:text-base"
           >
-            Ver trabajos seleccionados
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Explorar portafolio
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </a>
         </div>
       </div>

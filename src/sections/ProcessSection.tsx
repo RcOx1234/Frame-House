@@ -18,7 +18,7 @@ export default function ProcessSection() {
   return (
     <section 
       ref={sectionRef} 
-      className="section-flowing bg-warm-brown z-30 min-h-screen"
+      className="section-flowing z-30 min-h-screen bg-[#2A1219]"
     >
       {/* Grain overlay for this section */}
       <div className="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none"

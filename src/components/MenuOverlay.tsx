@@ -9,6 +9,7 @@ interface MenuOverlayProps {
 
 const menuItems = [
   { label: 'Servicios', href: '#services' },
+  { label: 'Portafolio', href: '#portfolio-spotlight' },
   { label: 'Proceso', href: '#process' },
   { label: 'Planes', href: '#plans' },
   { label: 'Trabajos', href: '#portfolio' },
@@ -86,7 +87,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
       <button
         ref={closeRef}
         onClick={onClose}
-        className="absolute top-4 right-4 md:top-8 md:right-8 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-burnt-orange/20 transition-colors"
+        className="absolute top-4 right-4 md:top-8 md:right-8 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#D12C3B]/25 transition-colors"
       >
         <X className="w-5 h-5 md:w-6 md:h-6 text-off-white" />
       </button>
@@ -99,7 +100,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
             ref={el => { itemsRef.current[index] = el; }}
             href={item.href}
             onClick={(e) => handleItemClick(e, item.href)}
-            className="font-heading font-bold text-3xl md:text-6xl text-off-white hover:text-burnt-orange transition-colors tracking-wider opacity-0"
+            className="font-heading font-bold text-3xl md:text-6xl text-off-white hover:text-[#FF4D5C] transition-colors tracking-wider opacity-0"
           >
             {item.label}
           </a>
@@ -110,7 +111,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
       <div className="absolute bottom-8 md:bottom-12">
         <a 
           href="mailto:hello@framehouse.studio"
-          className="label-mono text-muted-warm hover:text-burnt-orange transition-colors text-xs md:text-sm"
+          className="label-mono text-muted-warm hover:text-[#FF4D5C] transition-colors text-xs md:text-sm"
         >
           hello@framehouse.studio
         </a>

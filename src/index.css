@@ -12,19 +12,19 @@
     --card-foreground: 40 20% 94%;
     --popover: 220 14% 6%;
     --popover-foreground: 40 20% 94%;
-    --primary: 18 55% 47%;
-    --primary-foreground: 40 20% 94%;
-    --secondary: 18 25% 34%;
-    --secondary-foreground: 40 20% 94%;
+    --primary: 352 72% 45%;
+    --primary-foreground: 40 25% 96%;
+    --secondary: 340 35% 22%;
+    --secondary-foreground: 40 25% 96%;
     --muted: 220 10% 12%;
     --muted-foreground: 30 8% 68%;
-    --accent: 18 55% 47%;
-    --accent-foreground: 40 20% 94%;
+    --accent: 352 78% 52%;
+    --accent-foreground: 40 25% 96%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 10% 18%;
     --input: 220 10% 18%;
-    --ring: 18 55% 47%;
+    --ring: 352 72% 45%;
     --radius: 0.75rem;
   }
 }
@@ -45,6 +45,7 @@
 }
 
 #services,
+#portfolio-spotlight,
 #process,
 #plans,
 #portfolio,
@@ -70,16 +71,25 @@
   background-color: #6B4C42;
 }
 
+/* Brand accent: vibrant red (CTA, highlights). Legacy class name kept for compatibility. */
 .text-burnt-orange {
-  color: #B85C38;
+  color: #D12C3B;
 }
 
 .bg-burnt-orange {
-  background-color: #B85C38;
+  background-color: #D12C3B;
 }
 
 .border-burnt-orange {
-  border-color: #B85C38;
+  border-color: #D12C3B;
+}
+
+.bg-bordeaux-deep {
+  background-color: #1A0A10;
+}
+
+.text-editorial-cream {
+  color: #F4EDE4;
 }
 
 .text-off-white {
@@ -124,12 +134,13 @@
 
 /* Button Styles */
 .btn-primary {
-  @apply px-6 py-3 bg-burnt-orange text-off-white font-medium rounded-xl transition-all duration-300;
+  @apply px-6 py-3 text-off-white font-medium rounded-xl transition-all duration-300;
+  background-image: linear-gradient(180deg, #E63E4C 0%, #B01828 100%);
 }
 
 .btn-primary:hover {
   @apply brightness-110 transform -translate-y-0.5;
-  box-shadow: 0 12px 32px rgba(184, 92, 56, 0.35);
+  box-shadow: 0 12px 36px rgba(209, 44, 59, 0.38);
 }
 
 /* Scroll Indicator Animation */
@@ -232,12 +243,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #B85C38;
+  background: #A01828;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #c96a44;
+  background: #D12C3B;
 }
 
 /* Form Styles */
@@ -252,7 +263,7 @@ input, textarea {
 
 input:focus, textarea:focus {
   outline: none;
-  border-color: #B85C38;
+  border-color: #D12C3B;
 }
 
 input::placeholder, textarea::placeholder {
@@ -312,8 +323,8 @@ input::placeholder, textarea::placeholder {
 
 .plan-card-featured {
   @apply relative rounded-2xl overflow-hidden;
-  background: linear-gradient(135deg, rgba(184, 92, 56, 0.15) 0%, rgba(184, 92, 56, 0.05) 100%);
-  border: 1px solid rgba(184, 92, 56, 0.3);
+  background: linear-gradient(135deg, rgba(209, 44, 59, 0.14) 0%, rgba(209, 44, 59, 0.04) 100%);
+  border: 1px solid rgba(209, 44, 59, 0.32);
 }
 
 /* Service Card */
@@ -345,11 +356,11 @@ input::placeholder, textarea::placeholder {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 9999px;
-  background-color: rgba(184, 92, 56, 0.2);
+  background-color: rgba(209, 44, 59, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #B85C38;
+  color: #FF6B6B;
   font-family: 'Space Mono', monospace;
   font-size: 0.875rem;
   font-weight: 700;

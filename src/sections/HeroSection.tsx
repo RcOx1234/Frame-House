@@ -126,7 +126,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
             backgroundPosition: 'center',
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0B0D10]/70 via-[#0B0D10]/60 to-[#0B0D10]/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1A0A10]/88 via-[#12060A]/78 to-[#0B0508]/95" />
         </div>
 
         {/* Navigation */}
@@ -140,7 +140,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           <div className="flex items-center gap-3 md:gap-6">
             <button 
               onClick={onMenuOpen}
-              className="text-off-white hover:text-burnt-orange transition-colors font-QuickSand text-xs md:text-sm tracking-widest flex items-center gap-2"
+              className="flex items-center gap-2 font-QuickSand text-xs tracking-widest text-off-white transition-colors hover:text-[#FF6B6B] md:text-sm"
             >
               <Menu className="w-5 h-5 md:hidden" />
               <span className="hidden md:inline">MENU</span>
@@ -252,7 +252,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
         >
           <div className="flex flex-col items-center gap-2">
             <span className="label-mono text-muted-warm text-xs">SCROLL</span>
-            <ChevronDown className="w-5 h-5 text-burnt-orange scroll-indicator" />
+            <ChevronDown className="scroll-indicator h-5 w-5 text-[#E63E4C]" />
           </div>
         </div>
       </section>

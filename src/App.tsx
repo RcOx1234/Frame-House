@@ -7,6 +7,7 @@ import { ChevronUp } from 'lucide-react';
 
 import HeroSection from './sections/HeroSection';
 import ServicesSection from './sections/ServicesSection';
+import PortfolioShowcaseSection from './sections/PortfolioShowcaseSection';
 import ProcessSection from './sections/ProcessSection';
 import MetricsSection from './sections/MetricsSection';
 import PlansSection from './sections/PlansSection';
@@ -62,7 +63,7 @@ function HomePage() {
         toastOptions={{
           style: {
             background: '#0B0D10',
-            border: '1px solid rgba(184, 92, 56, 0.3)',
+            border: '1px solid rgba(209, 44, 59, 0.35)',
             color: '#F3F1EA'
           }
         }}
@@ -75,6 +76,7 @@ function HomePage() {
         <div id="services">
           <ServicesSection />
         </div>
+        <PortfolioShowcaseSection />
         <div id="process">
           <ProcessSection />
         </div>
@@ -90,7 +92,7 @@ function HomePage() {
       <button
         onClick={scrollToTop}
         aria-label="Volver arriba"
-        className={`fixed bottom-6 right-5 md:bottom-8 md:right-8 z-[90] w-11 h-11 md:w-12 md:h-12 rounded-full border border-white/20 bg-[#0B0D10]/85 backdrop-blur text-off-white hover:text-burnt-orange hover:border-burnt-orange/50 transition-all duration-500 ease-out flex items-center justify-center ${
+        className={`fixed bottom-6 right-5 md:bottom-8 md:right-8 z-[90] w-11 h-11 md:w-12 md:h-12 rounded-full border border-white/20 bg-[#0B0D10]/85 backdrop-blur text-off-white hover:text-[#FF4D5C] hover:border-[#D12C3B]/55 transition-all duration-500 ease-out flex items-center justify-center ${
           showScrollTop
             ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
             : 'opacity-0 translate-y-3 scale-95 pointer-events-none'
