@@ -80,14 +80,14 @@ export default function ServicesSection() {
   return (
     <section 
       ref={sectionRef} 
-      className="section-flowing z-20 border-y border-black/5 bg-[#EDE6DA] py-16 text-[#1A0A0F] md:py-[12vh]"
+      className="section-flowing z-20 border-y border-white/10 bg-[#141210] py-16 text-off-white md:py-[12vh]"
     >
       <div className="px-6 md:px-[7vw]">
-        <p className="label-mono mb-4 text-[#5C4A45]">Servicios</p>
+        <p className="label-mono mb-4 text-muted-warm">Servicios</p>
         {/* Heading */}
         <h2 
           ref={headingRef}
-          className="headline-lg mb-10 max-w-full text-[#1A0A0F] md:mb-16 md:max-w-[46vw] text-2xl md:text-inherit"
+          className="headline-lg mb-10 max-w-full text-off-white md:mb-16 md:max-w-[46vw] text-2xl md:text-inherit"
         >
           Producción full-service para marcas que se mueven rápido.
         </h2>
@@ -98,20 +98,20 @@ export default function ServicesSection() {
             <div
               key={service.title}
               ref={el => { cardsRef.current[index] = el; }}
-              className="group flex w-full flex-col rounded-[22px] border border-black/[0.08] bg-white/80 p-6 shadow-[0_18px_50px_-24px_rgba(26,10,15,0.35)] backdrop-blur-sm transition-all duration-300 hover:border-[#D12C3B]/25 hover:bg-white md:h-[54vh] md:w-[26vw] md:p-8"
+              className="group flex w-full flex-col rounded-[22px] border border-white/10 bg-[#1C1916]/90 p-6 shadow-[0_18px_50px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-all duration-300 hover:border-[#D12C3B]/35 hover:bg-[#232019] md:h-[54vh] md:w-[26vw] md:p-8"
             >
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[#D12C3B]/12 md:mb-8 md:h-14 md:w-14">
-                <service.icon className="h-6 w-6 text-[#B01828] md:h-7 md:w-7" />
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[#D12C3B]/18 md:mb-8 md:h-14 md:w-14">
+                <service.icon className="h-6 w-6 text-[#E85A66] md:h-7 md:w-7" />
               </div>
               
-              <h3 className="font-heading mb-4 text-xl font-bold tracking-wide text-[#1A0A0F] md:mb-6 md:text-2xl">
+              <h3 className="font-heading mb-4 text-xl font-bold tracking-wide text-off-white md:mb-6 md:text-2xl">
                 {service.title}
               </h3>
               
               <ul className="flex-1 space-y-2 md:space-y-3">
                 {service.items.map((item, i) => (
-                  <li key={item} className="flex items-start gap-3 text-sm text-[#3D2F2C] md:text-base">
-                    <span className="mt-1.5 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-[#D12C3B]/30 bg-[#D12C3B]/8 font-mono text-[10px] font-bold text-[#A01828]">
+                  <li key={item} className="flex items-start gap-3 text-sm text-muted-warm md:text-base">
+                    <span className="mt-1.5 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-[#D12C3B]/35 bg-[#D12C3B]/12 font-mono text-[10px] font-bold text-[#F07882]">
                       {i + 1}
                     </span>
                     <span>{item}</span>
@@ -126,7 +126,7 @@ export default function ServicesSection() {
         <div className="mt-8 md:mt-12">
           <a 
             href="#portfolio-spotlight" 
-            className="group inline-flex items-center gap-2 text-sm font-semibold text-[#A01828] transition-colors hover:text-[#1A0A0F] md:text-base"
+            className="group inline-flex items-center gap-2 text-sm font-semibold text-[#E85A66] transition-colors hover:text-off-white md:text-base"
           >
             Explorar portafolio
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -158,7 +158,12 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
         </div>
 
         {/* Mobile Layout */}
-        <div className="lg:hidden absolute inset-0 flex flex-col items-center justify-center pt-14 pb-8 px-6">
+        <div className="lg:hidden absolute inset-0 pt-14 pb-8 px-6">
+          <div
+            className="pointer-events-none absolute inset-0 bg-black/50"
+            aria-hidden
+          />
+          <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center">
           {/* Phone Frame - Mobile */}
           <div 
             ref={phoneRef}
@@ -195,6 +200,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
               Contáctanos
             </button>
           </div>
+          </div>
         </div>
 
         {/* Desktop Layout */}
@@ -215,12 +221,12 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           {/* Center Phone Frame */}
           <div 
             ref={phoneRef}
-            className="absolute left-[52%] top-[48%] -translate-x-1/2 -translate-y-1/2 w-[31vw] h-[80vh] phone-frame z-20"
+            className="absolute left-[52%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-[31vw] h-[80vh] phone-frame z-20"
           >
             <img 
               src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`} 
               alt="Vertical Content"
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover object-[center_22%]"
               loading="eager"
               decoding="async"
               onError={(e) => console.error('Image failed to load:', e)}
@@ -245,10 +251,10 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           </div>
         </div>
 
-        {/* Scroll Indicator */}
+        {/* Scroll Indicator — en móvil más cerca del borde inferior para no chocar con Contáctanos */}
         <div 
           ref={scrollIndicatorRef}
-          className="absolute left-1/2 bottom-[6vh] -translate-x-1/2 z-20"
+          className="absolute left-1/2 z-20 -translate-x-1/2 max-lg:bottom-3 lg:bottom-[6vh]"
         >
           <div className="flex flex-col items-center gap-2">
             <span className="label-mono text-muted-warm text-xs">SCROLL</span>

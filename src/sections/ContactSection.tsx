@@ -331,8 +331,8 @@ export default function ContactSection() {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="relative mt-14 py-6 md:py-8 px-6 md:px-[7vw] border-t border-white/10 z-10">
+      {/* Footer: charcoal sólido (sin transparencia) para que no se marque costura con la foto */}
+      <div className="relative z-10 mt-14 border-t border-white/10 bg-charcoal px-6 py-6 md:px-[7vw] md:py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="font-heading font-bold text-off-white text-base md:text-lg tracking-wider">
             FRAME HOUSE
