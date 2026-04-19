@@ -99,7 +99,7 @@ export default function PortfolioSection() {
           {/* Heading */}
           <h2 
             ref={headingRef}
-            className="headline-lg text-off-white mb-8 md:mb-12 opacity-0 text-2xl md:text-inherit"
+            className="headline-lg text-off-white mb-8 md:mb-12 text-2xl md:text-inherit"
           >
             Trabajos seleccionados.
           </h2>
@@ -110,13 +110,15 @@ export default function PortfolioSection() {
               <div
                 key={project.title}
                 ref={el => { cardsRef.current[index] = el; }}
-                className="portfolio-card w-full md:w-[40vw] h-[40vh] md:h-[56vh] opacity-0 group cursor-pointer"
+                className="portfolio-card w-full md:w-[40vw] h-[40vh] md:h-[56vh] group cursor-pointer"
                 onClick={() => openVideo(project)}
               >
                 <img 
                   src={project.image}
                   alt={project.title}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
                 />
                 
                 {/* Overlay Content */}
@@ -131,6 +133,7 @@ export default function PortfolioSection() {
                         e.stopPropagation();
                         openVideo(project);
                       }}
+                      aria-label={`Reproducir ${project.title}`}
                       className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-burnt-orange flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     >
                       <Play className="w-4 h-4 md:w-5 md:h-5 text-off-white ml-0.5" />
@@ -147,6 +150,7 @@ export default function PortfolioSection() {
                         e.stopPropagation();
                         openVideo(project);
                       }}
+                      aria-label={`Abrir ${project.title}`}
                       className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     >
                       <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-off-white" />

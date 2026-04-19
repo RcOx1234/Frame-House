@@ -105,7 +105,7 @@ export default function MetricsSection() {
         {/* Heading */}
         <h2 
           ref={headingRef}
-          className="headline-lg text-off-white mb-10 md:mb-16 opacity-0 text-2xl md:text-inherit"
+          className="headline-lg text-off-white mb-10 md:mb-16 text-2xl md:text-inherit"
         >
           Construido para performance.
         </h2>
@@ -116,10 +116,7 @@ export default function MetricsSection() {
             <div
               key={metric.value}
               ref={el => { cardsRef.current[index] = el; }}
-              className="metric-card flex-1 opacity-0"
-              style={{
-                marginTop: window.innerWidth >= 768 && index === 1 ? '4vh' : 0
-              }}
+              className={`metric-card flex-1 ${index === 1 ? 'md:mt-[4vh]' : ''}`}
             >
               <div className="text-4xl md:text-6xl font-heading font-bold text-burnt-orange mb-3 md:mb-4">
                 {metric.value}

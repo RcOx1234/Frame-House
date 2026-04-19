@@ -1,9 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Check, ArrowRight } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+import { useRef, useState } from 'react';
+import { Check } from 'lucide-react';
 
 interface Plan {
   name: string;
@@ -43,76 +39,6 @@ export default function PlansSection() {
   const planItemsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<Plan>(plans[1]); // Default to GROWTH
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const headline = headlineRef.current;
-    const phone = phoneRef.current;
-    const planItems = planItemsRef.current.filter(Boolean);
-
-    if (!section || !headline || !phone) return;
-
-    const ctx = gsap.context(() => {
-      gsap.set([headline, phone], { opacity: 1 });
-      planItems.forEach(item => gsap.set(item, { opacity: 1 }));
-
-      // Scroll-driven animation - FIXED: removed float animation
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: '+=100%',
-          pin: true,
-          scrub: 0.3,
-        }
-      });
-
-      // ENTRANCE (0-30%) - elements come in
-      scrollTl
-        .fromTo(headline,
-          { x: -60, opacity: 0 },
-          { x: 0, opacity: 1, ease: 'power2.out' },
-          0
-        )
-        .fromTo(phone,
-          { y: 60, opacity: 0 },
-          { y: 0, opacity: 1, ease: 'power2.out' },
-          0.05
-        );
-
-      // Stagger plans entrance
-      planItems.forEach((plan, index) => {
-        scrollTl.fromTo(plan,
-          { x: 40, opacity: 0 },
-          { x: 0, opacity: 1, ease: 'power2.out' },
-          0.08 + index * 0.04
-        );
-      });
-
-      // EXIT (70-100%) - elements go out
-      scrollTl
-        .fromTo(headline,
-          { x: 0, opacity: 1 },
-          { x: -40, opacity: 0, ease: 'power2.in' },
-          0.6
-        )
-        .fromTo(phone,
-          { y: 0, opacity: 1 },
-          { y: -40, opacity: 0, ease: 'power2.in' },
-          0.6
-        );
-
-      planItems.forEach((plan) => {
-        scrollTl.fromTo(plan,
-          { x: 0, opacity: 1 },
-          { x: 30, opacity: 0, ease: 'power2.in' },
-          0.6
-        );
-      });
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
-
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
@@ -123,10 +49,10 @@ export default function PlansSection() {
   return (
     <section 
       ref={sectionRef} 
-      className="section-pinned bg-charcoal z-50"
+      className="section-flowing bg-charcoal z-50 min-h-screen"
     >
       {/* Mobile Layout */}
-      <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center pt-20 pb-10 px-6 overflow-y-auto">
+      <div className="lg:hidden absolute inset-0 flex flex-col items-center justify-start pt-14 pb-8 px-6 overflow-y-auto">
         {/* Headline */}
         <div ref={headlineRef} className="text-center mb-6">
           <h2 className="headline-xl text-off-white mb-2 text-3xl">
@@ -185,21 +111,20 @@ export default function PlansSection() {
             
             <button 
               onClick={scrollToContact}
-              className="btn-primary w-full flex items-center justify-center gap-2"
+              className="btn-primary w-full"
             >
               Agendar llamada
-              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         {/* Left Headline */}
         <div 
           ref={headlineRef}
-          className="absolute left-[7vw] top-1/2 -translate-y-1/2 w-[28vw] z-20"
+          className="absolute left-[6vw] top-1/2 -translate-y-1/2 w-[24vw] z-30"
         >
           <h2 className="headline-xl text-off-white mb-4">
             ELIGE UN PLAN
@@ -212,12 +137,14 @@ export default function PlansSection() {
         {/* Center Phone Frame - Featured Plan */}
         <div 
           ref={phoneRef}
-          className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[78vh] phone-frame z-20"
+          className="absolute left-[52%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-[31vw] h-[80vh] phone-frame z-20"
         >
           <img 
             src={`${import.meta.env.BASE_URL}images/plan-growth.jpg`} 
             alt="Growth Plan"
             className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
             onError={(e) => console.error('Image failed to load:', e)}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D10] via-[#0B0D10]/70 to-transparent" />
@@ -243,10 +170,9 @@ export default function PlansSection() {
             
             <button 
               onClick={scrollToContact}
-              className="btn-primary w-full flex items-center justify-center gap-2"
+              className="btn-primary w-full"
             >
               Agendar llamada
-              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -254,7 +180,7 @@ export default function PlansSection() {
         {/* Right Plans List */}
         <div 
           ref={plansListRef}
-          className="absolute left-[72vw] top-1/2 -translate-y-1/2 w-[22vw] z-20"
+          className="absolute left-[74vw] top-1/2 -translate-y-1/2 w-[20vw] z-30"
         >
           <div className="space-y-4">
             {plans.map((plan, index) => (
@@ -264,8 +190,8 @@ export default function PlansSection() {
                 ref={el => { planItemsRef.current[index] = el; }}
                 className={`w-full p-6 rounded-xl cursor-pointer transition-all duration-300 text-left ${
                   selectedPlan.name === plan.name
-                    ? 'bg-burnt-orange/20 border border-burnt-orange/40' 
-                    : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                    ? 'bg-[#4A4A4A]/65 border border-white/30'
+                    : 'bg-black/55 border border-white/10 hover:bg-black/70'
                 }`}
               >
                 <h4 className="font-heading font-bold text-off-white text-lg tracking-wide mb-1">

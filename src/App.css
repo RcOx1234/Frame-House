@@ -37,9 +37,4 @@ section {
   .section-pinned {
     min-height: 100svh;
   }
-  
-  .phone-frame {
-    width: 80vw !important;
-    height: 50vh !important;
-  }
 }

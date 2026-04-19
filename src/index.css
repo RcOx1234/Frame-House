@@ -40,7 +40,16 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
+}
+
+#services,
+#process,
+#plans,
+#portfolio,
+#contact {
+  scroll-margin-top: 5rem;
 }
 
 /* Typography */
@@ -372,15 +381,14 @@ input::placeholder, textarea::placeholder {
   .headline-lg {
     font-size: clamp(28px, 8vw, 40px);
   }
-  
-  .phone-frame {
-    width: 72vw !important;
-    height: 56vh !important;
-  }
 }
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {

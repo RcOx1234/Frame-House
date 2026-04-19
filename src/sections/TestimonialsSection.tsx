@@ -100,7 +100,7 @@ export default function TestimonialsSection() {
         {/* Heading */}
         <h2 
           ref={headingRef}
-          className="headline-lg text-off-white mb-10 md:mb-16 text-center opacity-0 text-2xl md:text-inherit"
+          className="headline-lg text-off-white mb-10 md:mb-16 text-center text-2xl md:text-inherit"
         >
           Lo que dicen los founders.
         </h2>
@@ -111,7 +111,7 @@ export default function TestimonialsSection() {
             <div
               key={testimonial.author}
               ref={el => { cardsRef.current[index] = el; }}
-              className="testimonial-card w-full md:w-[26vw] md:h-[46vh] flex flex-col opacity-0 p-6 md:p-8"
+              className="testimonial-card w-full md:w-[26vw] md:h-[46vh] flex flex-col p-6 md:p-8"
             >
               <Quote className="w-8 h-8 md:w-10 md:h-10 text-burnt-orange/40 mb-4 md:mb-6" />
               
@@ -124,6 +124,8 @@ export default function TestimonialsSection() {
                   src={testimonial.avatar}
                   alt={testimonial.author}
                   className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div>
                   <p className="font-heading font-bold text-off-white text-sm md:text-base">

@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Toaster } from 'sonner';
 import { Routes, Route } from 'react-router-dom';
+import { ChevronUp } from 'lucide-react';
 
 import HeroSection from './sections/HeroSection';
 import ServicesSection from './sections/ServicesSection';
@@ -22,52 +23,19 @@ gsap.registerPlugin(ScrollTrigger);
 // Página principal (todo tu código original)
 function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const pinned = ScrollTrigger.getAll()
-        .filter(st => st.vars.pin)
-        .sort((a, b) => a.start - b.start);
-      
-      const maxScroll = ScrollTrigger.maxScroll(window);
-      
-      if (!maxScroll || pinned.length === 0) return;
-
-      const pinnedRanges = pinned.map(st => ({
-        start: st.start / maxScroll,
-        end: (st.end ?? st.start) / maxScroll,
-        center: (st.start + ((st.end ?? st.start) - st.start) * 0.5) / maxScroll,
-      }));
-
-      ScrollTrigger.create({
-        snap: {
-          snapTo: (value: number) => {
-            const inPinned = pinnedRanges.some(
-              r => value >= r.start - 0.05 && value <= r.end + 0.05
-            );
-            
-            if (!inPinned) return value;
-
-            const target = pinnedRanges.reduce((closest, r) =>
-              Math.abs(r.center - value) < Math.abs(closest - value) ? r.center : closest,
-              pinnedRanges[0]?.center ?? 0
-            );
-
-            const distance = Math.abs(target - value);
-            if (distance > 0.15) return value;
-
-            return target;
-          },
-          duration: { min: 0.15, max: 0.4 },
-          delay: 0,
-          ease: 'power2.out'
-        }
-      });
-    }, 800);
-
-    return () => {
-      clearTimeout(timer);
+    const toggleScrollTop = () => {
+      const servicesSection = document.getElementById('services');
+      const threshold = servicesSection?.offsetTop ?? window.innerHeight * 0.8;
+      setShowScrollTop(window.scrollY >= threshold);
     };
+
+    toggleScrollTop();
+    window.addEventListener('scroll', toggleScrollTop, { passive: true });
+
+    return () => window.removeEventListener('scroll', toggleScrollTop);
   }, []);
 
   useEffect(() => {
@@ -80,6 +48,10 @@ function HomePage() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [menuOpen]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="relative bg-charcoal min-h-screen">
@@ -114,6 +86,18 @@ function HomePage() {
         <TestimonialsSection />
         <ContactSection />
       </main>
+
+      <button
+        onClick={scrollToTop}
+        aria-label="Volver arriba"
+        className={`fixed bottom-6 right-5 md:bottom-8 md:right-8 z-[90] w-11 h-11 md:w-12 md:h-12 rounded-full border border-white/20 bg-[#0B0D10]/85 backdrop-blur text-off-white hover:text-burnt-orange hover:border-burnt-orange/50 transition-all duration-500 ease-out flex items-center justify-center ${
+          showScrollTop
+            ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+            : 'opacity-0 translate-y-3 scale-95 pointer-events-none'
+        }`}
+      >
+        <ChevronUp className="w-5 h-5" />
+      </button>
     </div>
   );
 }

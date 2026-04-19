@@ -110,7 +110,7 @@ export default function ContactSection() {
     <section 
       ref={sectionRef} 
       id="contact"
-      className="section-flowing bg-charcoal z-80 py-16 md:py-[12vh] relative overflow-hidden"
+      className="section-flowing bg-charcoal z-80 py-16 md:py-[12vh] pb-28 md:pb-20 relative overflow-x-hidden"
     >
       {/* Background Image */}
       <div 
@@ -127,7 +127,7 @@ export default function ContactSection() {
 
       <div className="px-6 md:px-[7vw] relative z-10">
         {/* Mobile Layout */}
-        <div className="md:hidden flex flex-col gap-8">
+        <div className="md:hidden flex flex-col gap-8 min-h-[100svh] pb-6">
           {/* Headline */}
           <div ref={headlineRef}>
             <h2 className="headline-xl text-off-white mb-3 text-3xl">
@@ -141,7 +141,7 @@ export default function ContactSection() {
           {/* Form Card */}
           <div 
             ref={formCardRef}
-            className="phone-frame bg-[#0B0D10]/90 backdrop-blur-xl p-6"
+            className="phone-frame bg-[#0B0D10]/90 backdrop-blur-xl p-6 max-h-[56svh] overflow-y-auto overscroll-contain"
           >
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -198,7 +198,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <p className="label-mono text-muted-warm mb-0.5 text-xs">EMAIL</p>
-                  <p className="text-off-white text-sm">framehouselatam@gmail.com</p>
+                  <p className="text-off-white text-sm break-all">framehouselatam@gmail.com</p>
                 </div>
               </div>
 
@@ -332,7 +332,7 @@ export default function ContactSection() {
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 py-6 md:py-8 px-6 md:px-[7vw] border-t border-white/10">
+      <div className="relative mt-14 py-6 md:py-8 px-6 md:px-[7vw] border-t border-white/10 z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="font-heading font-bold text-off-white text-base md:text-lg tracking-wider">
             FRAME HOUSE

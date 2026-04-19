@@ -86,7 +86,7 @@ export default function ServicesSection() {
         {/* Heading */}
         <h2 
           ref={headingRef}
-          className="headline-lg text-off-white mb-10 md:mb-16 max-w-full md:max-w-[40vw] opacity-0 text-2xl md:text-inherit"
+          className="headline-lg text-off-white mb-10 md:mb-16 max-w-full md:max-w-[40vw] text-2xl md:text-inherit"
         >
           Producción full-service para marcas que se mueven rápido.
         </h2>
@@ -97,7 +97,7 @@ export default function ServicesSection() {
             <div
               key={service.title}
               ref={el => { cardsRef.current[index] = el; }}
-              className="service-card w-full md:w-[26vw] md:h-[54vh] flex flex-col opacity-0 p-6 md:p-8"
+              className="service-card w-full md:w-[26vw] md:h-[54vh] flex flex-col p-6 md:p-8"
             >
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-burnt-orange/20 flex items-center justify-center mb-6 md:mb-8">
                 <service.icon className="w-6 h-6 md:w-7 md:h-7 text-burnt-orange" />

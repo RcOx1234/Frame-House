@@ -63,9 +63,10 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: '+=100%',
+          end: '+=90%',
           pin: true,
-          scrub: 0.3,
+          scrub: 0.45,
+          anticipatePin: 1,
           onLeaveBack: () => {
             // Reset all elements to visible when scrolling back to top
             gsap.set([phone, leftContent, rightContent, bg, scrollIndicator], { 
@@ -157,16 +158,18 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
         </div>
 
         {/* Mobile Layout */}
-        <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center pt-20 pb-10 px-6">
+        <div className="lg:hidden absolute inset-0 flex flex-col items-center justify-center pt-14 pb-8 px-6">
           {/* Phone Frame - Mobile */}
           <div 
             ref={phoneRef}
-            className="w-[70vw] h-[45vh] phone-frame mb-6"
+            className="w-[70vw] h-[45vh] max-h-[48svh] phone-frame mb-5"
           >
             <img 
               src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`} 
               alt="Vertical Content"
               className="w-full h-full object-cover"
+              loading="eager"
+              decoding="async"
               onError={(e) => console.error('Image failed to load:', e)}
             />
           </div>
@@ -195,11 +198,11 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
         </div>
 
         {/* Desktop Layout */}
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           {/* Left Content */}
           <div 
             ref={leftContentRef}
-            className="absolute left-[7vw] top-1/2 -translate-y-1/2 w-[28vw] z-20"
+            className="absolute left-[6vw] top-1/2 -translate-y-1/2 w-[24vw] z-30"
           >
             <h1 className="headline-xl text-off-white mb-4">
               Produce a tu marca
@@ -212,12 +215,14 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           {/* Center Phone Frame */}
           <div 
             ref={phoneRef}
-            className="absolute left-1/2 top-[50%] -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[78vh] phone-frame z-20"
+            className="absolute left-[52%] top-[48%] -translate-x-1/2 -translate-y-1/2 w-[31vw] h-[80vh] phone-frame z-20"
           >
             <img 
               src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`} 
               alt="Vertical Content"
               className="w-full h-full object-cover"
+              loading="eager"
+              decoding="async"
               onError={(e) => console.error('Image failed to load:', e)}
             />
           </div>
@@ -225,7 +230,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           {/* Right Content */}
           <div 
             ref={rightContentRef}
-            className="absolute left-[72vw] top-1/2 -translate-y-1/2 w-[22vw] z-20"
+            className="absolute left-[74vw] top-1/2 -translate-y-1/2 w-[20vw] z-30"
           >
             <p className="text-muted-warm mb-6 leading-relaxed">
               Producimos contenido short-form que se ve premium y performa: 
