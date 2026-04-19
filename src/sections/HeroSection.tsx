@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronDown, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import QuoteModal from '../components/QuoteModal';
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,15 +14,15 @@ interface HeroSectionProps {
 export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const phoneRef = useRef<HTMLDivElement>(null);
-  const leftContentRef = useRef<HTMLDivElement>(null);
-  const rightContentRef = useRef<HTMLDivElement>(null);
+  const phoneMobileRef = useRef<HTMLDivElement>(null);
+  const phoneDesktopRef = useRef<HTMLDivElement>(null);
+  const leftMobileRef = useRef<HTMLDivElement>(null);
+  const leftDesktopRef = useRef<HTMLDivElement>(null);
+  const rightMobileRef = useRef<HTMLDivElement>(null);
+  const rightDesktopRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
-  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const navigate = useNavigate();
-  
-
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
@@ -35,89 +34,92 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
   useEffect(() => {
     const section = sectionRef.current;
     const bg = bgRef.current;
-    const phone = phoneRef.current;
-    const leftContent = leftContentRef.current;
-    const rightContent = rightContentRef.current;
     const nav = navRef.current;
-    const scrollIndicator = scrollIndicatorRef.current;
 
-    if (!section || !bg || !phone || !leftContent || !rightContent || !nav || !scrollIndicator) return;
+    if (!section || !bg || !nav) return;
 
-    const ctx = gsap.context(() => {
-      // Set initial visible state for load animation
-      gsap.set([phone, leftContent, rightContent], { opacity: 1 });
+    const mm = gsap.matchMedia();
 
-      // Initial load animation
-      const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    mm.add('(min-width: 1024px)', () => {
+      const phone = phoneDesktopRef.current;
+      const leftContent = leftDesktopRef.current;
+      const rightContent = rightDesktopRef.current;
+      if (!phone || !leftContent || !rightContent) return () => {};
 
-      loadTl
-        .fromTo(bg, { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 1.2 })
-        .fromTo(phone, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, 0.2)
-        .fromTo(leftContent, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.3)
-        .fromTo(rightContent, { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.4)
-        .fromTo(nav, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.6 }, 0.5)
-        .fromTo(scrollIndicator, { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.8);
+      const ctx = gsap.context(() => {
+        gsap.set([phone, leftContent, rightContent], { opacity: 1 });
 
-      // Scroll-driven exit animation - FIXED: removed anticipatePin, adjusted scrub
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: '+=90%',
-          pin: true,
-          scrub: 0.45,
-          anticipatePin: 1,
-          onLeaveBack: () => {
-            // Reset all elements to visible when scrolling back to top
-            gsap.set([phone, leftContent, rightContent, bg, scrollIndicator], { 
-              opacity: 1, x: 0, y: 0, scale: 1 
-            });
-          }
-        }
-      });
+        const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        loadTl
+          .fromTo(bg, { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 1.2 })
+          .fromTo(phone, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, 0.2)
+          .fromTo(leftContent, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.3)
+          .fromTo(rightContent, { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.4)
+          .fromTo(nav, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.6 }, 0.5);
 
-      // EXIT phase only - elements fade out as user scrolls
-      scrollTl
-        .fromTo(scrollIndicator, { opacity: 1 }, { opacity: 0, ease: 'power2.out' }, 0)
-        .fromTo(phone, 
-          { y: 0, opacity: 1 }, 
-          { y: -60, opacity: 0, ease: 'power2.in' }, 
-          0.4
-        )
-        .fromTo(leftContent, 
-          { x: 0, opacity: 1 }, 
-          { x: -40, opacity: 0, ease: 'power2.in' }, 
-          0.4
-        )
-        .fromTo(rightContent, 
-          { x: 0, opacity: 1 }, 
-          { x: 40, opacity: 0, ease: 'power2.in' }, 
-          0.4
-        )
-        .fromTo(bg, 
-          { scale: 1 }, 
-          { scale: 1.03, ease: 'none' }, 
-          0
-        );
-    }, section);
+        const scrollTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top top',
+            end: '+=90%',
+            pin: true,
+            scrub: 0.45,
+            anticipatePin: 1,
+            onLeaveBack: () => {
+              gsap.set([phone, leftContent, rightContent, bg], {
+                opacity: 1,
+                x: 0,
+                y: 0,
+                scale: 1,
+              });
+            },
+          },
+        });
 
-    return () => ctx.revert();
+        scrollTl
+          .fromTo(phone, { y: 0, opacity: 1 }, { y: -60, opacity: 0, ease: 'power2.in' }, 0.4)
+          .fromTo(leftContent, { x: 0, opacity: 1 }, { x: -40, opacity: 0, ease: 'power2.in' }, 0.4)
+          .fromTo(rightContent, { x: 0, opacity: 1 }, { x: 40, opacity: 0, ease: 'power2.in' }, 0.4)
+          .fromTo(bg, { scale: 1 }, { scale: 1.03, ease: 'none' }, 0);
+      }, section);
+
+      return () => ctx.revert();
+    });
+
+    mm.add('(max-width: 1023px)', () => {
+      const phone = phoneMobileRef.current;
+      const leftContent = leftMobileRef.current;
+      const rightContent = rightMobileRef.current;
+      if (!phone || !leftContent || !rightContent) return () => {};
+
+      const ctx = gsap.context(() => {
+        gsap.set([phone, leftContent, rightContent], { opacity: 1 });
+
+        const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        loadTl
+          .fromTo(bg, { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 1.2 })
+          .fromTo(phone, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, 0.2)
+          .fromTo(leftContent, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.3)
+          .fromTo(rightContent, { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.4)
+          .fromTo(nav, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.6 }, 0.5);
+      }, section);
+
+      return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, []);
 
   return (
     <>
-      <QuoteModal 
-        isOpen={quoteModalOpen} 
+      <QuoteModal
+        isOpen={quoteModalOpen}
         onClose={() => setQuoteModalOpen(false)}
         onGoToContact={scrollToContact}
       />
-      
-      <section 
-        ref={sectionRef} 
-        className="section-pinned bg-charcoal z-10"
-      >
-        {/* Background Image */}
-        <div 
+
+      <section ref={sectionRef} className="section-pinned bg-charcoal z-10">
+        <div
           ref={bgRef}
           className="absolute inset-0"
           style={{
@@ -129,102 +131,87 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-[#1A0A10]/88 via-[#12060A]/78 to-[#0B0508]/95" />
         </div>
 
-        {/* Navigation */}
-        <div 
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] hidden bg-black/45 lg:block"
+          aria-hidden
+        />
+
+        <div
           ref={navRef}
-          className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-[4vw] py-4 md:py-[4vh]"
+          className="absolute left-0 right-0 top-0 z-50 flex items-center justify-between px-4 py-4 md:px-[4vw] md:py-[4vh]"
         >
-          <div className="font-heading font-bold text-off-white text-base md:text-lg tracking-wider">
+          <div className="font-heading text-base font-bold tracking-wider text-off-white md:text-lg">
             FRAME HOUSE
           </div>
           <div className="flex items-center gap-3 md:gap-6">
-            <button 
+            <button
+              type="button"
               onClick={onMenuOpen}
               className="flex items-center gap-2 font-QuickSand text-xs tracking-widest text-off-white transition-colors hover:text-[#FF6B6B] md:text-sm"
             >
-              <Menu className="w-5 h-5 md:hidden" />
+              <Menu className="h-5 w-5 md:hidden" />
               <span className="hidden md:inline">MENU</span>
             </button>
-          <a /*href="Menu.html"*/>
-              <button
-                onClick={() => navigate('/plan-personalizado')}
-              className="btn-primary text-xs md:text-sm px-3 py-2 md:px-6 md:py-3"
+            <button
+              type="button"
+              onClick={() => navigate('/plan-personalizado')}
+              className="btn-primary px-3 py-2 text-xs md:px-6 md:py-3 md:text-sm"
             >
               <span className="hidden md:inline">Solicitar cotización</span>
               <span className="md:hidden">Cotizar</span>
             </button>
-            </a>
           </div>
         </div>
 
-        {/* Mobile Layout */}
-        <div className="lg:hidden absolute inset-0 pt-14 pb-8 px-6">
-          <div
-            className="pointer-events-none absolute inset-0 bg-black/50"
-            aria-hidden
-          />
+        <div className="absolute inset-0 pt-14 pb-8 px-6 lg:hidden">
+          <div className="pointer-events-none absolute inset-0 bg-black/50" aria-hidden />
           <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center">
-          {/* Phone Frame - Mobile */}
-          <div 
-            ref={phoneRef}
-            className="w-[70vw] h-[45vh] max-h-[48svh] phone-frame mb-5"
-          >
-            <img 
-              src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`} 
-              alt="Vertical Content"
-              className="w-full h-full object-cover"
-              loading="eager"
-              decoding="async"
-              onError={(e) => console.error('Image failed to load:', e)}
-            />
-          </div>
+            <div ref={phoneMobileRef} className="phone-frame mb-5 h-[45vh] max-h-[48svh] w-[70vw]">
+              <img
+                src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`}
+                alt="Vertical Content"
+                className="h-full w-full object-cover"
+                loading="eager"
+                decoding="async"
+                onError={(e) => console.error('Image failed to load:', e)}
+              />
+            </div>
 
-          {/* Content - Mobile */}
-          <div ref={leftContentRef} className="text-center">
-            <h1 className="headline-xl text-off-white mb-3 text-4xl">
-              Produce a tu marca
-            </h1>
-            <p className="text-base text-muted-warm mb-4">
-              El nuevo estándar para el storytelling de marca.
-            </p>
-          </div>
+            <div ref={leftMobileRef} className="text-center">
+              <h1 className="headline-xl mb-3 text-4xl text-off-white">Produce a tu marca</h1>
+              <p className="mb-4 text-base text-muted-warm">
+                El nuevo estándar para el storytelling de marca.
+              </p>
+            </div>
 
-          <div ref={rightContentRef} className="text-center px-4">
-            <p className="text-muted-warm mb-4 text-sm leading-relaxed">
-              Producimos contenido short-form que se ve premium y performa.
-            </p>
-            <button 
-              onClick={scrollToContact}
-              className="btn-primary"
-            >
-              Contáctanos
-            </button>
-          </div>
+            <div ref={rightMobileRef} className="px-4 text-center">
+              <p className="mb-4 text-sm leading-relaxed text-muted-warm">
+                Producimos contenido short-form que se ve premium y performa.
+              </p>
+              <button type="button" onClick={scrollToContact} className="btn-primary">
+                Contáctanos
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Desktop Layout */}
         <div className="hidden lg:block">
-          {/* Left Content */}
-          <div 
-            ref={leftContentRef}
-            className="absolute left-[6vw] top-1/2 -translate-y-1/2 w-[24vw] z-30"
+          <div
+            ref={leftDesktopRef}
+            className="absolute left-[6vw] top-1/2 z-30 w-[24vw] -translate-y-1/2"
           >
-            <h1 className="headline-xl text-off-white mb-4">
-              Produce a tu marca
-            </h1>
-            <p className="text-xl text-muted-warm font-light">
+            <h1 className="headline-xl mb-4 text-off-white">Produce a tu marca</h1>
+            <p className="text-xl font-light text-muted-warm">
               El nuevo estándar para el storytelling de marca.
             </p>
           </div>
 
-          {/* Center Phone Frame */}
-          <div 
-            ref={phoneRef}
-            className="absolute left-[52%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-[31vw] h-[80vh] phone-frame z-20"
+          <div
+            ref={phoneDesktopRef}
+            className="phone-frame absolute left-[52%] top-[50%] z-20 h-[80vh] w-[31vw] -translate-x-1/2 -translate-y-1/2"
           >
-            <img 
-              src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`} 
+            <img
+              src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`}
               alt="Vertical Content"
               className="h-full w-full object-cover object-[center_22%]"
               loading="eager"
@@ -233,32 +220,17 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
             />
           </div>
 
-          {/* Right Content */}
-          <div 
-            ref={rightContentRef}
-            className="absolute left-[74vw] top-1/2 -translate-y-1/2 w-[20vw] z-30"
+          <div
+            ref={rightDesktopRef}
+            className="absolute left-[74vw] top-1/2 z-30 w-[20vw] -translate-y-1/2"
           >
-            <p className="text-muted-warm mb-6 leading-relaxed">
-              Producimos contenido short-form que se ve premium y performa: 
-              producción, edición, hooks y entrega incluidos.
+            <p className="mb-6 leading-relaxed text-muted-warm">
+              Producimos contenido short-form que se ve premium y performa: producción, edición,
+              hooks y entrega incluidos.
             </p>
-            <button 
-              onClick={scrollToContact}
-              className="btn-primary w-full"
-            >
+            <button type="button" onClick={scrollToContact} className="btn-primary w-full">
               Contáctanos
             </button>
-          </div>
-        </div>
-
-        {/* Scroll Indicator — en móvil más cerca del borde inferior para no chocar con Contáctanos */}
-        <div 
-          ref={scrollIndicatorRef}
-          className="absolute left-1/2 z-20 -translate-x-1/2 max-lg:bottom-3 lg:bottom-[6vh]"
-        >
-          <div className="flex flex-col items-center gap-2">
-            <span className="label-mono text-muted-warm text-xs">SCROLL</span>
-            <ChevronDown className="scroll-indicator h-5 w-5 text-[#E63E4C]" />
           </div>
         </div>
       </section>
