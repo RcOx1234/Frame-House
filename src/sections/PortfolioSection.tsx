@@ -17,7 +17,7 @@ const projects = [
     title: 'Bolones Picapiedra',
     tag: 'Video Prom',
     image: 'https://ik.imagekit.io/ObamaRS12/Frame%20House/FH.jpg',
-    videoUrl: 'https://res.cloudinary.com/dolxglacq/video/upload/q_auto/f_auto/v1776647903/Video_Prom_zx0qjx.mp4'
+    videoUrl: 'https://res.cloudinary.com/dolxglacq/video/upload/q_auto/f_auto/v1776649769/Video_Prom_2_cdxhzd.mp4'
   }
 ];
 
