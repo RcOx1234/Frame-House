@@ -22,6 +22,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
   const rightDesktopRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
+  const [isDesktopInput, setIsDesktopInput] = useState(false);
   const navigate = useNavigate();
 
   const scrollToContact = () => {
@@ -30,6 +31,26 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    const desktopInputMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const updateDesktopInput = () => setIsDesktopInput(desktopInputMedia.matches);
+    updateDesktopInput();
+
+    if (desktopInputMedia.addEventListener) {
+      desktopInputMedia.addEventListener('change', updateDesktopInput);
+    } else {
+      desktopInputMedia.addListener(updateDesktopInput);
+    }
+
+    return () => {
+      if (desktopInputMedia.addEventListener) {
+        desktopInputMedia.removeEventListener('change', updateDesktopInput);
+      } else {
+        desktopInputMedia.removeListener(updateDesktopInput);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -163,7 +184,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           </div>
         </div>
 
-        <div className="absolute inset-0 pt-14 pb-8 px-6 lg:hidden">
+        <div className={`absolute inset-0 pt-14 pb-8 px-6 ${isDesktopInput ? 'hidden' : 'lg:hidden'}`}>
           <div className="pointer-events-none absolute inset-0 bg-black/50" aria-hidden />
           <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center">
             <div ref={phoneMobileRef} className="phone-frame mb-5 h-[45vh] max-h-[48svh] w-[70vw]">
@@ -195,7 +216,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           </div>
         </div>
 
-        <div className="hidden lg:block">
+        <div className={isDesktopInput ? 'block' : 'hidden lg:block'}>
           <div
             ref={leftDesktopRef}
             className="absolute left-[6vw] top-1/2 z-30 w-[24vw] -translate-y-1/2"
@@ -208,7 +229,8 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
 
           <div
             ref={phoneDesktopRef}
-            className="phone-frame absolute left-[52%] top-[50%] z-20 h-[80vh] w-[31vw] -translate-x-1/2 -translate-y-1/2"
+            className="phone-frame absolute left-[52%] z-20 h-[74vh] w-[31vw] -translate-x-1/2"
+            style={{ top: '10vh' }}
           >
             <img
               src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`}
