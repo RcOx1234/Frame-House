@@ -11,13 +11,13 @@ const projects = [
     title: 'Ojos asi',
     tag: 'Shakira',
     image: 'https://billboard.com.co/wp-content/uploads/2025/07/ojos-asi-770x470.png',
-    videoUrl: '/Frame-House/videos/Ojos-asi.mp4'
+    videoUrl: 'https://res.cloudinary.com/dolxglacq/video/upload/q_auto/f_auto/v1776644599/Ojos-asi_avh7b2.mp4'
   },
   {
     title: 'Bolones Picapiedra',
     tag: 'Video Prom',
     image: `${import.meta.env.BASE_URL}images/portfolio-2.jpg`,
-    videoUrl: `${import.meta.env.BASE_URL}videos/Ojos-asi.mp4`
+    videoUrl: 'https://res.cloudinary.com/dolxglacq/video/upload/q_auto/f_auto/v1776644599/Ojos-asi_avh7b2.mp4'
   }
 ];
 
