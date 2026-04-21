@@ -25,6 +25,7 @@ export default function PlanPersonalizado() {
     const [planSeleccionado, setPlanSeleccionado] = useState('');
     const [productosSeleccionados, setProductosSeleccionados] = useState<string[]>([]);
     const [mensajeVisible, setMensajeVisible] = useState<'copiado' | 'contacto' | null>(null);
+    const [missingRequired, setMissingRequired] = useState(false);
     const navigate = useNavigate();
 
     const planActual = planesData.find(p => p.value === planSeleccionado);
@@ -49,6 +50,13 @@ export default function PlanPersonalizado() {
     };
 
     const copiarAlPortapapeles = async () => {
+        const hasRequired = nombre.trim().length > 0 && email.trim().length > 0;
+        if (!hasRequired) {
+            setMissingRequired(true);
+            return;
+        }
+        setMissingRequired(false);
+
         if (!planActual) {
             const select = document.querySelector('.form-select') as HTMLElement;
             select?.classList.add('error-shake');
@@ -123,10 +131,11 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                         <label className="form-label">Nombre</label>
                         <input 
                             type="text" 
-                            className="form-input"
+                            className={`form-input ${missingRequired && nombre.trim().length === 0 ? 'error-shake' : ''}`}
                             placeholder="Tu nombre"
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
+                            required
                         />
                     </div>
                     
@@ -134,10 +143,11 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                         <label className="form-label">Email</label>
                         <input 
                             type="email" 
-                            className="form-input"
+                            className={`form-input ${missingRequired && email.trim().length === 0 ? 'error-shake' : ''}`}
                             placeholder="tu@email.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
                     </div>
                     
@@ -222,6 +232,11 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                               d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                     </svg>
                 </button>
+                {missingRequired && (
+                    <p className="mt-3 text-center text-sm text-[#FF6B76]">
+                        Nombre y email son obligatorios para continuar.
+                    </p>
+                )}
             </div>
 
             <div className={`message ${mensajeVisible === 'copiado' ? 'show' : ''}`}>

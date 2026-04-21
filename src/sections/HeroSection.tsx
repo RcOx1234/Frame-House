@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Menu } from 'lucide-react';
 import QuoteModal from '../components/QuoteModal';
 import { useNavigate } from 'react-router-dom';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface HeroSectionProps {
   onMenuOpen: () => void;
@@ -13,119 +10,41 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
-  const phoneMobileRef = useRef<HTMLDivElement>(null);
-  const phoneDesktopRef = useRef<HTMLDivElement>(null);
-  const leftMobileRef = useRef<HTMLDivElement>(null);
-  const leftDesktopRef = useRef<HTMLDivElement>(null);
-  const rightMobileRef = useRef<HTMLDivElement>(null);
-  const rightDesktopRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
+
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
-  const [isDesktopInput, setIsDesktopInput] = useState(false);
   const navigate = useNavigate();
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (contactSection) contactSection.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToPortfolio = () => {
+    const portfolioSection = document.getElementById('portfolio-spotlight');
+    if (portfolioSection) portfolioSection.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
-    const desktopInputMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const updateDesktopInput = () => setIsDesktopInput(desktopInputMedia.matches);
-    updateDesktopInput();
-
-    if (desktopInputMedia.addEventListener) {
-      desktopInputMedia.addEventListener('change', updateDesktopInput);
-    } else {
-      desktopInputMedia.addListener(updateDesktopInput);
-    }
-
-    return () => {
-      desktopInputMedia.removeEventListener('change', updateDesktopInput);
-    };
-    
-  }, []);
-
-  useEffect(() => {
     const section = sectionRef.current;
-    const bg = bgRef.current;
     const nav = navRef.current;
+    const left = leftRef.current;
+    const panel = panelRef.current;
+    const right = rightRef.current;
+    if (!section || !nav || !left || !panel || !right) return;
 
-    if (!section || !bg || !nav) return;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.fromTo(nav, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.55 }, 0)
+        .fromTo(left, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.75 }, 0.1)
+        .fromTo(panel, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.85 }, 0.16)
+        .fromTo(right, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.75 }, 0.2);
+    }, section);
 
-    const mm = gsap.matchMedia();
-
-    mm.add('(min-width: 1024px)', () => {
-      const phone = phoneDesktopRef.current;
-      const leftContent = leftDesktopRef.current;
-      const rightContent = rightDesktopRef.current;
-      if (!phone || !leftContent || !rightContent) return () => {};
-
-      const ctx = gsap.context(() => {
-        gsap.set([phone, leftContent, rightContent], { opacity: 1 });
-
-        const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-        loadTl
-          .fromTo(bg, { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 1.2 })
-          .fromTo(phone, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, 0.2)
-          .fromTo(leftContent, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.3)
-          .fromTo(rightContent, { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.4)
-          .fromTo(nav, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.6 }, 0.5);
-
-        const scrollTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: 'top top',
-            end: '+=90%',
-            pin: true,
-            scrub: 0.45,
-            anticipatePin: 1,
-            onLeaveBack: () => {
-              gsap.set([phone, leftContent, rightContent, bg], {
-                opacity: 1,
-                x: 0,
-                y: 0,
-                scale: 1,
-              });
-            },
-          },
-        });
-
-        scrollTl
-          .fromTo(phone, { y: 0, opacity: 1 }, { y: -60, opacity: 0, ease: 'power2.in' }, 0.4)
-          .fromTo(leftContent, { x: 0, opacity: 1 }, { x: -40, opacity: 0, ease: 'power2.in' }, 0.4)
-          .fromTo(rightContent, { x: 0, opacity: 1 }, { x: 40, opacity: 0, ease: 'power2.in' }, 0.4)
-          .fromTo(bg, { scale: 1 }, { scale: 1.03, ease: 'none' }, 0);
-      }, section);
-
-      return () => ctx.revert();
-    });
-
-    mm.add('(max-width: 1023px)', () => {
-      const phone = phoneMobileRef.current;
-      const leftContent = leftMobileRef.current;
-      const rightContent = rightMobileRef.current;
-      if (!phone || !leftContent || !rightContent) return () => {};
-
-      const ctx = gsap.context(() => {
-        gsap.set([phone, leftContent, rightContent], { opacity: 1 });
-
-        const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-        loadTl
-          .fromTo(bg, { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 1.2 })
-          .fromTo(phone, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, 0.2)
-          .fromTo(leftContent, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.3)
-          .fromTo(rightContent, { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9 }, 0.4)
-          .fromTo(nav, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.6 }, 0.5);
-      }, section);
-
-      return () => ctx.revert();
-    });
-
-    return () => mm.revert();
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -136,44 +55,67 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
         onGoToContact={scrollToContact}
       />
 
-      <section ref={sectionRef} className="section-pinned bg-charcoal z-10">
+      <section
+        ref={sectionRef}
+        className="relative z-10 min-h-[100svh] overflow-hidden bg-[var(--fh-bg-deep)]"
+      >
+        {/* Gradient background (brief-approved) */}
         <div
-          ref={bgRef}
           className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${import.meta.env.BASE_URL}images/hero-creator.jpg)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1A0A10]/88 via-[#12060A]/78 to-[#0B0508]/95" />
-        </div>
-
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] hidden bg-black/45 lg:block"
           aria-hidden
+          style={{
+            background:
+              'radial-gradient(50% 60% at 32% 40%, rgba(42,11,11,0.85) 0%, rgba(7,5,5,1) 68%), radial-gradient(55% 65% at 58% 45%, rgba(23,7,7,0.75) 0%, rgba(7,5,5,1) 70%), radial-gradient(60% 60% at 80% 0%, rgba(23,7,7,0.40) 0%, rgba(7,5,5,0) 70%)',
+          }}
         />
 
+        {/* Red glow behind panel */}
+        <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
+          <div className="h-[520px] w-[520px] rounded-full bg-[var(--fh-accent-red)]/20 blur-[125px] lg:h-[640px] lg:w-[640px]" />
+        </div>
+
+        {/* Vignette */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden
+          style={{
+            background:
+              'radial-gradient(120% 120% at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 62%, rgba(0,0,0,0.75) 100%)',
+          }}
+        />
+
+        {/* Header */}
         <div
           ref={navRef}
-          className="absolute left-0 right-0 top-0 z-50 flex items-center justify-between px-4 py-4 md:px-[4vw] md:py-[4vh]"
+          className="absolute left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-5 md:px-[4vw] md:py-7"
         >
-          <div className="font-heading text-base font-bold tracking-wider text-off-white md:text-lg">
-            FRAME HOUSE
+          <div className="flex items-center gap-3">
+            <img
+              src={`${import.meta.env.BASE_URL}images/fh-mark.png`}
+              alt="Frame House"
+              className="h-9 w-9 rounded-lg border border-white/10 bg-black/35 object-cover shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
+              loading="eager"
+              decoding="async"
+            />
+            <div className="font-heading text-sm font-semibold tracking-wider text-[var(--fh-text-white)] md:text-base">
+              FRAME HOUSE
+            </div>
           </div>
+
           <div className="flex items-center gap-3 md:gap-6">
             <button
               type="button"
               onClick={onMenuOpen}
-              className="flex items-center gap-2 font-QuickSand text-xs tracking-widest text-off-white transition-colors hover:text-[#FF6B6B] md:text-sm"
+              className="flex items-center gap-2 text-xs tracking-widest text-[var(--fh-text-white)]/85 transition-colors hover:text-[var(--fh-text-white)] md:text-sm"
             >
               <Menu className="h-5 w-5 md:hidden" />
               <span className="hidden md:inline">MENU</span>
             </button>
+
             <button
               type="button"
               onClick={() => navigate('/plan-personalizado')}
-              className="btn-primary px-3 py-2 text-xs md:px-6 md:py-3 md:text-sm"
+              className="rounded-xl bg-[var(--fh-accent-red)] px-3 py-2 text-xs font-medium text-white shadow-[0_18px_40px_rgba(214,30,43,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--fh-accent-red-dark)] md:px-6 md:py-3 md:text-sm"
             >
               <span className="hidden md:inline">Solicitar cotización</span>
               <span className="md:hidden">Cotizar</span>
@@ -181,75 +123,144 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
           </div>
         </div>
 
-        <div className={`absolute inset-0 pt-14 pb-8 px-6 ${isDesktopInput ? 'hidden' : 'lg:hidden'}`}>
-          <div className="pointer-events-none absolute inset-0 bg-black/50" aria-hidden />
-          <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center">
-            <div ref={phoneMobileRef} className="phone-frame mb-5 h-[45vh] max-h-[48svh] w-[70vw]">
-              <img
-                src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`}
-                alt="Vertical Content"
-                className="h-full w-full object-cover"
-                loading="eager"
-                decoding="async"
-                onError={(e) => console.error('Image failed to load:', e)}
-              />
+        {/* Content */}
+        <div className="relative z-10 flex min-h-[100svh] items-center pt-20 pb-10 md:pt-24 md:pb-14">
+          <div className="mx-auto w-full max-w-[1440px] px-6 lg:px-16">
+            <div className="grid grid-cols-1 items-center gap-8 lg:gap-14 lg:[grid-template-columns:36%_30%_34%]">
+              {/* Mobile: label first */}
+              <div className="order-1 flex flex-col gap-3 lg:hidden">
+                <div className="flex items-center gap-3">
+                  <div className="h-[2px] w-7 bg-[var(--fh-accent-red)]" />
+                  <span className="text-xs tracking-[0.22em] text-[var(--fh-text-cream)]/70 md:text-sm">
+                    PRODUCTORA AUDIOVISUAL & AGENCIA DIGITAL
+                  </span>
+                </div>
+              </div>
+
+              {/* Left desktop */}
+              <div ref={leftRef} className="order-1 hidden flex-col gap-5 lg:flex lg:order-none">
+                <div className="flex items-center gap-3">
+                  <div className="h-[2px] w-7 bg-[var(--fh-accent-red)]" />
+                  <span className="text-xs tracking-[0.22em] text-[var(--fh-text-cream)]/70 md:text-sm">
+                    PRODUCTORA AUDIOVISUAL & AGENCIA DIGITAL
+                  </span>
+                </div>
+
+                <h1
+                  className="font-heading font-black uppercase leading-[0.9] tracking-[-0.04em] text-[var(--fh-text-cream)]"
+                  style={{ fontSize: 'clamp(30px, 4.4vw, 66px)' }}
+                >
+                  PRODUCIMOS <br />
+                  CONTENIDO <br />
+                  <span className="text-[var(--fh-accent-red)]">QUE VENDE.</span>
+                </h1>
+
+                <p className="max-w-[32rem] text-sm leading-relaxed text-[var(--fh-text-muted)] md:text-base">
+                  Producción, edición y estrategia de contenido para marcas que quieren crecer.
+                </p>
+
+                <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:gap-4">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/plan-personalizado')}
+                    className="rounded-[18px] bg-[var(--fh-accent-red)] px-6 py-3 text-sm font-medium text-white shadow-[0_18px_44px_rgba(214,30,43,0.26)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--fh-accent-red-dark)] md:text-base"
+                  >
+                    Solicitar cotización
+                  </button>
+                  <button
+                    type="button"
+                    onClick={scrollToPortfolio}
+                    className="rounded-[18px] border border-[var(--fh-text-cream)]/35 bg-transparent px-6 py-3 text-sm font-medium text-[var(--fh-text-cream)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/5 md:text-base"
+                  >
+                    Ver portafolio
+                  </button>
+                </div>
+              </div>
+
+              {/* Center panel */}
+              <div ref={panelRef} className="order-2 flex items-center justify-center lg:order-none">
+                <div className="relative w-full max-w-[320px] sm:max-w-[390px] lg:max-w-[500px]">
+                  <div className="relative mx-auto aspect-[4/5] overflow-hidden rounded-[28px] bg-[var(--fh-panel-dark)] shadow-[0_26px_90px_rgba(0,0,0,0.62)]">
+                    <div
+                      className="pointer-events-none absolute inset-0"
+                      aria-hidden
+                      style={{
+                        boxShadow:
+                          '0 0 0 1px rgba(214,30,43,0.34) inset, 0 0 30px rgba(214,30,43,0.12)',
+                      }}
+                    />
+
+                    <div className="relative flex h-full items-center justify-center">
+                      <img
+                        src={`${import.meta.env.BASE_URL}images/hero-center-composite.png`}
+                        alt="FH device"
+                        className="hidden h-full w-full select-none object-contain lg:block"
+                        loading="eager"
+                        decoding="async"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/hero-logo-main.png`;
+                        }}
+                      />
+                      <img
+                        src={`${import.meta.env.BASE_URL}images/hero-logo-main.png`}
+                        alt="FH"
+                        className="h-full w-full select-none object-cover lg:hidden"
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile content after logo */}
+              <div className="order-3 flex flex-col gap-5 text-center lg:hidden">
+                <h1
+                  className="font-heading font-black uppercase leading-[0.9] tracking-[-0.04em] text-[var(--fh-text-cream)]"
+                  style={{ fontSize: 'clamp(30px, 9.5vw, 48px)' }}
+                >
+                  PRODUCIMOS <br />
+                  CONTENIDO <br />
+                  <span className="text-[var(--fh-accent-red)]">QUE VENDE.</span>
+                </h1>
+
+                <p className="text-sm leading-relaxed text-[var(--fh-text-muted)]">
+                  Producción, edición y estrategia de contenido para marcas que quieren crecer.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={scrollToContact}
+                  className="mx-auto w-full max-w-[320px] rounded-[18px] bg-[var(--fh-accent-red)] px-6 py-3 text-sm font-medium text-white shadow-[0_18px_44px_rgba(214,30,43,0.22)] transition-all duration-300 hover:bg-[var(--fh-accent-red-dark)]"
+                >
+                  Contáctanos
+                </button>
+              </div>
+
+              {/* Right */}
+              <div ref={rightRef} className="order-3 hidden flex-col gap-6 text-left lg:flex lg:order-none">
+                <div className="text-sm leading-relaxed text-[var(--fh-text-cream)] sm:text-base md:text-lg">
+                  Contenido short-form <br />
+                  de alto nivel.
+                  <div className="mt-3 text-[var(--fh-text-muted)]">
+                    Estrategia, producción <br />
+                    y entrega incluidos.
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={scrollToContact}
+                  className="w-fit rounded-[18px] bg-[var(--fh-accent-red)] px-6 py-3 text-sm font-medium text-white shadow-[0_18px_44px_rgba(214,30,43,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--fh-accent-red-dark)] md:text-base"
+                >
+                  Contáctanos
+                </button>
+
+                <span className="text-xs text-[var(--fh-text-muted)] md:text-sm">
+                  Respuesta en menos de 24h
+                </span>
+              </div>
             </div>
-
-            <div ref={leftMobileRef} className="text-center">
-              <h1 className="headline-xl mb-3 text-4xl text-off-white">Produce a tu marca</h1>
-              <p className="mb-4 text-base text-muted-warm">
-                El nuevo estándar para el storytelling de marca.
-              </p>
-            </div>
-
-            <div ref={rightMobileRef} className="px-4 text-center">
-              <p className="mb-4 text-sm leading-relaxed text-muted-warm">
-                Producimos contenido short-form que se ve premium y performa.
-              </p>
-              <button type="button" onClick={scrollToContact} className="btn-primary">
-                Contáctanos
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className={isDesktopInput ? 'block' : 'hidden lg:block'}>
-          <div
-            ref={leftDesktopRef}
-            className="absolute left-[6vw] top-1/2 z-30 w-[24vw] -translate-y-1/2"
-          >
-            <h1 className="headline-xl mb-4 text-off-white">Produce a tu marca</h1>
-            <p className="text-xl font-light text-muted-warm">
-              El nuevo estándar para el storytelling de marca.
-            </p>
-          </div>
-
-          <div
-            ref={phoneDesktopRef}
-            className="phone-frame absolute left-[52%] z-20 h-[74vh] w-[31vw] -translate-x-1/2"
-            style={{ top: '10vh' }}
-          >
-            <img
-              src="https://ik.imagekit.io/ObamaRS12/Frame%20House/FH.jpg?updatedAt=1776647110379"
-              alt="Vertical Content"
-              className="h-full w-full object-cover object-[center_22%]"
-              loading="eager"
-              decoding="async"
-              onError={(e) => console.error('Image failed to load:', e)}
-            />
-          </div>
-
-          <div
-            ref={rightDesktopRef}
-            className="absolute left-[74vw] top-1/2 z-30 w-[20vw] -translate-y-1/2"
-          >
-            <p className="mb-6 leading-relaxed text-muted-warm">
-              Producimos contenido short-form que se ve premium y performa: producción, edición,
-              hooks y entrega incluidos.
-            </p>
-            <button type="button" onClick={scrollToContact} className="btn-primary w-full">
-              Contáctanos
-            </button>
           </div>
         </div>
       </section>

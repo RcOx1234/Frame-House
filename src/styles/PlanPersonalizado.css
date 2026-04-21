@@ -1,7 +1,9 @@
 /* Fondo que combina con tu app */
 .plan-page {
     min-height: 100vh;
-    background: #0B0D10;
+    background:
+      radial-gradient(70% 60% at 45% 18%, rgba(214, 30, 43, 0.16) 0%, rgba(7, 5, 5, 0) 60%),
+      linear-gradient(180deg, #100608 0%, #070505 100%);
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -11,17 +13,17 @@
 }
 
 .plan-card {
-    background: rgba(22, 22, 22, 0.95);
+    background: rgba(10, 10, 10, 0.92);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 18px;
     padding: 28px 24px;
     width: 100%;
     max-width: 460px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 
-        0 20px 40px -12px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.02);
+        0 24px 60px -20px rgba(0, 0, 0, 0.68),
+        0 0 0 1px rgba(214, 30, 43, 0.18);
     animation: slideUp 0.5s ease-out;
     position: relative;
     margin-top: 20px;
@@ -45,7 +47,7 @@
     right: 20px;
     width: 44px;
     height: 44px;
-    background: rgba(30, 30, 30, 0.9);
+    background: rgba(10, 10, 10, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
@@ -54,15 +56,15 @@
     cursor: pointer;
     transition: all 0.3s ease;
     z-index: 100;
-    color: #888;
+    color: #B7B0A7;
     padding: 0;
 }
 
 .home-btn:hover {
-    background: rgba(184, 92, 56, 0.2);
-    border-color: rgba(184, 92, 56, 0.4);
+    background: rgba(214, 30, 43, 0.18);
+    border-color: rgba(214, 30, 43, 0.45);
     transform: scale(1.1);
-    color: #B85C38;
+    color: #F7F4EF;
 }
 
 .home-btn svg {
@@ -71,13 +73,13 @@
 }
 
 .plan-title {
-    font-family: 'Inter', sans-serif;
-    color: #F3F1EA;
-    font-size: 26px;
+    font-family: 'Montserrat', sans-serif;
+    color: #F7F4EF;
+    font-size: 28px;
     margin-bottom: 24px;
     text-align: center;
-    font-weight: 500;
-    letter-spacing: -0.3px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     padding-right: 50px;
 }
 
@@ -88,7 +90,7 @@
 
 .form-label {
     display: block;
-    color: #666;
+    color: #B7B0A7;
     font-size: 13px;
     font-weight: 400;
     margin-bottom: 6px;
@@ -96,14 +98,14 @@
 }
 
 .form-group:focus-within .form-label {
-    color: #B85C38;
+    color: #F7F4EF;
 }
 
 .form-input,
 .form-select {
     width: 100%;
     padding: 14px 16px;
-    background: rgba(18, 18, 18, 0.9);
+    background: rgba(14, 14, 14, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     color: #F3F1EA;
@@ -117,13 +119,13 @@
 }
 
 .form-input::placeholder {
-    color: #555;
+    color: #7A7671;
     font-weight: 300;
 }
 
 .form-select {
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23B7B0A7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 14px center;
     background-size: 16px;
@@ -138,9 +140,9 @@
 
 .form-input:focus,
 .form-select:focus {
-    border-color: #B85C38;
+    border-color: rgba(214, 30, 43, 0.9);
     background: rgba(22, 22, 22, 1);
-    box-shadow: 0 0 0 3px rgba(184, 92, 56, 0.08);
+    box-shadow: 0 0 0 3px rgba(214, 30, 43, 0.14);
 }
 
 .form-select option {
@@ -153,7 +155,7 @@
 .products-section {
     margin: 20px 0;
     padding: 18px;
-    background: rgba(18, 18, 18, 0.5);
+    background: rgba(10, 10, 10, 0.62);
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.04);
 }
@@ -194,20 +196,20 @@
     top: 0;
     height: 100%;
     width: 3px;
-    background: #B85C38;
+    background: #D61E2B;
     transform: scaleY(0);
     transition: transform 0.25s ease;
 }
 
 .product-item:hover {
     background: rgba(32, 32, 32, 0.7);
-    border-color: rgba(184, 92, 56, 0.2);
+    border-color: rgba(214, 30, 43, 0.32);
     transform: translateX(4px);
 }
 
 .product-item.selected {
-    background: rgba(184, 92, 56, 0.06);
-    border-color: rgba(184, 92, 56, 0.3);
+    background: rgba(214, 30, 43, 0.1);
+    border-color: rgba(214, 30, 43, 0.4);
 }
 
 .product-item.selected::before {
@@ -236,8 +238,8 @@
 }
 
 .product-item.selected .custom-checkbox {
-    background: #B85C38;
-    border-color: #B85C38;
+    background: #D61E2B;
+    border-color: #D61E2B;
 }
 
 .custom-checkbox svg {
@@ -266,7 +268,7 @@
 }
 
 .product-price {
-    color: #B85C38;
+    color: #FF6B76;
     font-weight: 600;
     font-size: 14px;
     margin-left: 8px;
@@ -277,9 +279,9 @@
 .summary {
     margin-top: 20px;
     padding: 18px;
-    background: rgba(184, 92, 56, 0.05);
+    background: rgba(214, 30, 43, 0.08);
     border-radius: 12px;
-    border: 1px solid rgba(184, 92, 56, 0.12);
+    border: 1px solid rgba(214, 30, 43, 0.2);
 }
 
 .summary-row {
@@ -301,7 +303,7 @@
 }
 
 .summary-price {
-    color: #B85C38;
+    color: #FF6B76;
     font-size: 18px;
     font-weight: 600;
 }
@@ -310,7 +312,7 @@
     width: 100%;
     padding: 16px 20px;
     margin-top: 20px;
-    background: linear-gradient(135deg, #B85C38 0%, #8B4513 100%);
+    background: linear-gradient(180deg, #D61E2B 0%, #A81822 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -346,7 +348,7 @@
 
 .btn-cotizar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(184, 92, 56, 0.25);
+    box-shadow: 0 12px 34px rgba(214, 30, 43, 0.28);
 }
 
 .btn-cotizar:active {
@@ -374,7 +376,7 @@
     padding: 20px 28px;
     border-radius: 0 12px 12px 0;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-left: 4px solid #B85C38;
+    border-left: 4px solid #D61E2B;
     box-shadow: 10px 0 40px rgba(0,0,0,0.4);
     z-index: 1000;
     opacity: 0;
@@ -388,7 +390,7 @@
 }
 
 .message-title {
-    color: #B85C38;
+    color: #FF6B76;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 6px;
@@ -559,13 +561,14 @@
 /* Desktop y tablets grandes */
 @media (min-width: 768px) {
     .plan-page {
-        padding: 100px 40px 60px;
-        align-items: center;
+        padding: 74px 40px 60px;
+        align-items: flex-start;
     }
     
     .plan-card {
         max-width: 480px;
         padding: 32px 28px;
+        margin-top: 0;
     }
     
     .products-grid {

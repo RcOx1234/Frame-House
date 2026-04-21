@@ -26,6 +26,19 @@
     --input: 220 10% 18%;
     --ring: 352 72% 45%;
     --radius: 0.75rem;
+
+    /* Frame House Hero palette (brief-approved) */
+    --fh-bg-deep: #070505;
+    --fh-bg-burgundy: #170707;
+    --fh-bg-warm-shadow: #2A0B0B;
+    --fh-accent-red: #D61E2B;
+    --fh-accent-red-dark: #A81822;
+    --fh-text-cream: #EADCC2;
+    --fh-text-white: #F7F4EF;
+    --fh-text-muted: #B7B0A7;
+    --fh-line-soft: rgba(255,255,255,0.12);
+    --fh-line-red: rgba(214, 30, 43, 0.9);
+    --fh-panel-dark: #0A0A0A;
   }
 }
 
