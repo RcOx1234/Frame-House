@@ -233,7 +233,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
             style={{ top: '10vh' }}
           >
             <img
-              src={`${import.meta.env.BASE_URL}images/vertical-creator.jpg`}
+              src="https://ik.imagekit.io/ObamaRS12/Frame%20House/FH.jpg?updatedAt=1776647110379"
               alt="Vertical Content"
               className="h-full w-full object-cover object-[center_22%]"
               loading="eager"
