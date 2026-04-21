@@ -44,12 +44,9 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
     }
 
     return () => {
-      if (desktopInputMedia.addEventListener) {
-        desktopInputMedia.removeEventListener('change', updateDesktopInput);
-      } else {
-        desktopInputMedia.removeListener(updateDesktopInput);
-      }
+      desktopInputMedia.removeEventListener('change', updateDesktopInput);
     };
+    
   }, []);
 
   useEffect(() => {
