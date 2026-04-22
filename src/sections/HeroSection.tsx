@@ -97,7 +97,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
         >
           <div className="flex items-center gap-3">
             <img
-              src={`${import.meta.env.BASE_URL}images/fh-mark.png`}
+              src="https://ik.imagekit.io/ObamaRS12/Frame%20House/fh-mark.png"
               alt="Frame House"
               className="h-9 w-9 rounded-lg border border-white/10 bg-black/35 object-cover shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
               loading="eager"
@@ -112,7 +112,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
             <button
               type="button"
               onClick={onMenuOpen}
-              className="group flex items-center gap-2 text-xs tracking-widest text-[var(--fh-text-white)]/85 transition-colors duration-200 hover:text-[#FF4D5C] md:text-sm"
+              className="flex items-center gap-2 text-xs tracking-widest text-[var(--fh-text-white)]/85 transition-colors duration-200 hover:text-[#FF4D5C] md:text-sm"
             >
               <Menu className="h-5 w-5 text-current md:hidden" />
               <span className="hidden md:inline">MENU</span>
@@ -204,11 +204,11 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
                         loading="eager"
                         decoding="async"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = `${import.meta.env.BASE_URL}images/hero-logo-main.png`;
+                          (e.currentTarget as HTMLImageElement).src = "https://ik.imagekit.io/ObamaRS12/Frame%20House/hero-logo-main.png?updatedAt=1776832050374";
                         }}
                       />
                       <img
-                        src={`${import.meta.env.BASE_URL}images/hero-logo-main.png`}
+                        src="https://ik.imagekit.io/ObamaRS12/Frame%20House/hero-logo-main.png?updatedAt=1776832050374"
                         alt="FH"
                         className="h-full w-full select-none object-contain scale-[1.08] p-4 sm:scale-[1.06] sm:p-5 lg:hidden"
                         loading="eager"
