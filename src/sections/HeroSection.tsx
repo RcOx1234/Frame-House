@@ -186,7 +186,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
               {/* Center panel */}
               <div ref={panelRef} className="order-2 flex items-center justify-center lg:order-none">
                 <div className="relative w-full max-w-[320px] sm:max-w-[390px] lg:max-w-[500px]">
-                  <div className="relative mx-auto aspect-[4/4.35] sm:aspect-[4/4.45] lg:aspect-[4/5] overflow-hidden rounded-[28px] bg-[var(--fh-panel-dark)] border border-[#D61E2B]/40 shadow-[0_0_0_1px_rgba(214,30,43,0.28),0_20px_55px_rgba(214,30,43,0.18),0_26px_90px_rgba(0,0,0,0.62)]">
+                  <div className="relative mx-auto aspect-[4/4.15] sm:aspect-[4/4.25] lg:aspect-[4/5] overflow-hidden rounded-[28px] bg-[var(--fh-panel-dark)] border border-[#D61E2B]/40 shadow-[0_0_0_1px_rgba(214,30,43,0.28),0_20px_55px_rgba(214,30,43,0.18),0_26px_90px_rgba(0,0,0,0.62)]">
                     <div
                       className="pointer-events-none absolute inset-0"
                       aria-hidden
