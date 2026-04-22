@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Video, Film, Target, ArrowRight } from 'lucide-react';
+import { shouldUseLightAnimations } from '../lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,6 +35,7 @@ export default function ServicesSection() {
     const cards = cardsRef.current.filter(Boolean);
 
     if (!section || !heading || cards.length === 0) return;
+    const lightAnimations = shouldUseLightAnimations();
 
     const ctx = gsap.context(() => {
       // Heading animation
@@ -42,13 +44,14 @@ export default function ServicesSection() {
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: lightAnimations ? 0.5 : 0.8,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
             start: 'top 80%',
-            end: 'top 55%',
-            scrub: 1
+            end: lightAnimations ? undefined : 'top 55%',
+            scrub: lightAnimations ? false : 1,
+            once: lightAnimations
           }
         }
       );
@@ -61,13 +64,14 @@ export default function ServicesSection() {
             y: 0,
             opacity: 1,
             scale: 1,
-            duration: 0.8,
+            duration: lightAnimations ? 0.55 : 0.8,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: section,
               start: `top ${75 - index * 5}%`,
-              end: `top ${45 - index * 5}%`,
-              scrub: 1
+              end: lightAnimations ? undefined : `top ${45 - index * 5}%`,
+              scrub: lightAnimations ? false : 1,
+              once: lightAnimations
             }
           }
         );

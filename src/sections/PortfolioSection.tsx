@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Play } from 'lucide-react';
 import VideoModal from '../components/VideoModal';
+import { shouldUseLightAnimations } from '../lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,6 +35,7 @@ export default function PortfolioSection() {
     const cards = cardsRef.current.filter(Boolean);
 
     if (!section || !heading || cards.length === 0) return;
+    const lightAnimations = shouldUseLightAnimations();
 
     const ctx = gsap.context(() => {
       // Heading animation
@@ -42,13 +44,14 @@ export default function PortfolioSection() {
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: lightAnimations ? 0.5 : 0.8,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
             start: 'top 80%',
-            end: 'top 60%',
-            scrub: 1
+            end: lightAnimations ? undefined : 'top 60%',
+            scrub: lightAnimations ? false : 1,
+            once: lightAnimations
           }
         }
       );
@@ -60,13 +63,14 @@ export default function PortfolioSection() {
           {
             y: 0,
             opacity: 1,
-            duration: 0.8,
+            duration: lightAnimations ? 0.55 : 0.8,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: section,
               start: `top ${70 - index * 10}%`,
-              end: `top ${50 - index * 10}%`,
-              scrub: 1
+              end: lightAnimations ? undefined : `top ${50 - index * 10}%`,
+              scrub: lightAnimations ? false : 1,
+              once: lightAnimations
             }
           }
         );

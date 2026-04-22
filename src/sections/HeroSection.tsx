@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { Menu } from 'lucide-react';
 import QuoteModal from '../components/QuoteModal';
 import { useNavigate } from 'react-router-dom';
+import { shouldUseLightAnimations } from '../lib/motion';
 
 interface HeroSectionProps {
   onMenuOpen: () => void;
@@ -35,8 +36,13 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
     const panel = panelRef.current;
     const right = rightRef.current;
     if (!section || !nav || !left || !panel || !right) return;
+    const lightAnimations = shouldUseLightAnimations();
 
     const ctx = gsap.context(() => {
+      if (lightAnimations) {
+        gsap.set([nav, left, panel, right], { opacity: 1, x: 0, y: 0 });
+        return;
+      }
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       tl.fromTo(nav, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.55 }, 0)
         .fromTo(left, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.75 }, 0.1)
@@ -71,7 +77,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
 
         {/* Red glow behind panel */}
         <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
-          <div className="h-[520px] w-[520px] rounded-full bg-[var(--fh-accent-red)]/20 blur-[125px] lg:h-[640px] lg:w-[640px]" />
+          <div className="h-[360px] w-[360px] rounded-full bg-[var(--fh-accent-red)]/16 blur-[70px] lg:h-[640px] lg:w-[640px] lg:blur-[125px]" />
         </div>
 
         {/* Vignette */}

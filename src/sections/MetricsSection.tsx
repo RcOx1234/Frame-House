@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { shouldUseLightAnimations } from '../lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,6 +36,7 @@ export default function MetricsSection() {
     const charts = chartsRef.current.filter(Boolean);
 
     if (!section || !heading || cards.length === 0) return;
+    const lightAnimations = shouldUseLightAnimations();
 
     const ctx = gsap.context(() => {
       // Heading animation
@@ -43,13 +45,14 @@ export default function MetricsSection() {
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: lightAnimations ? 0.5 : 0.8,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
             start: 'top 80%',
-            end: 'top 60%',
-            scrub: 1
+            end: lightAnimations ? undefined : 'top 60%',
+            scrub: lightAnimations ? false : 1,
+            once: lightAnimations
           }
         }
       );
@@ -62,13 +65,14 @@ export default function MetricsSection() {
             y: 0,
             opacity: 1,
             scale: 1,
-            duration: 0.8,
+            duration: lightAnimations ? 0.55 : 0.8,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: section,
               start: `top ${70 - index * 8}%`,
-              end: `top ${45 - index * 8}%`,
-              scrub: 1
+              end: lightAnimations ? undefined : `top ${45 - index * 8}%`,
+              scrub: lightAnimations ? false : 1,
+              once: lightAnimations
             }
           }
         );
@@ -82,7 +86,7 @@ export default function MetricsSection() {
         
         gsap.to(chart, {
           strokeDashoffset: 0,
-          duration: 1.5,
+          duration: lightAnimations ? 0.9 : 1.5,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: chart,

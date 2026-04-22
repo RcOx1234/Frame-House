@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mail, MapPin, Clock, Send } from 'lucide-react';
 import { toast } from 'sonner';
+import { shouldUseLightAnimations } from '../lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,6 +34,7 @@ export default function ContactSection() {
     const section = sectionRef.current;
     const bg = bgRef.current;
     if (!section || !bg) return;
+    const lightAnimations = shouldUseLightAnimations();
 
     const animBlock = (
       headline: HTMLDivElement,
@@ -45,9 +47,15 @@ export default function ContactSection() {
         {
           x: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: lightAnimations ? 0.5 : 0.8,
           ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 80%', end: 'top 60%', scrub: 1 },
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            end: lightAnimations ? undefined : 'top 60%',
+            scrub: lightAnimations ? false : 1,
+            once: lightAnimations,
+          },
         },
       );
       gsap.fromTo(
@@ -56,9 +64,15 @@ export default function ContactSection() {
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: lightAnimations ? 0.55 : 0.8,
           ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 75%', end: 'top 55%', scrub: 1 },
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 75%',
+            end: lightAnimations ? undefined : 'top 55%',
+            scrub: lightAnimations ? false : 1,
+            once: lightAnimations,
+          },
         },
       );
       gsap.fromTo(
@@ -67,9 +81,15 @@ export default function ContactSection() {
         {
           x: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: lightAnimations ? 0.6 : 0.8,
           ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 70%', end: 'top 50%', scrub: 1 },
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 70%',
+            end: lightAnimations ? undefined : 'top 50%',
+            scrub: lightAnimations ? false : 1,
+            once: lightAnimations,
+          },
         },
       );
     };
@@ -83,15 +103,17 @@ export default function ContactSection() {
       if (!h || !f || !d) return () => {};
       const ctx = gsap.context(() => {
         animBlock(h, f, d);
-        gsap.fromTo(
-          bg,
-          { y: 0 },
-          {
-            y: '-4vh',
-            ease: 'none',
-            scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 2 },
-          },
-        );
+        if (!lightAnimations) {
+          gsap.fromTo(
+            bg,
+            { y: 0 },
+            {
+              y: '-4vh',
+              ease: 'none',
+              scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 2 },
+            },
+          );
+        }
       }, section);
       return () => ctx.revert();
     });
@@ -103,15 +125,17 @@ export default function ContactSection() {
       if (!h || !f || !d) return () => {};
       const ctx = gsap.context(() => {
         animBlock(h, f, d);
-        gsap.fromTo(
-          bg,
-          { y: 0 },
-          {
-            y: '-4vh',
-            ease: 'none',
-            scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 2 },
-          },
-        );
+        if (!lightAnimations) {
+          gsap.fromTo(
+            bg,
+            { y: 0 },
+            {
+              y: '-4vh',
+              ease: 'none',
+              scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 2 },
+            },
+          );
+        }
       }, section);
       return () => ctx.revert();
     });

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Quote } from 'lucide-react';
+import { shouldUseLightAnimations } from '../lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,6 +38,7 @@ export default function TestimonialsSection() {
     const cards = cardsRef.current.filter(Boolean);
 
     if (!section || !heading || cards.length === 0) return;
+    const lightAnimations = shouldUseLightAnimations();
 
     const ctx = gsap.context(() => {
       // Heading animation
@@ -45,13 +47,14 @@ export default function TestimonialsSection() {
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: lightAnimations ? 0.5 : 0.8,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
             start: 'top 80%',
-            end: 'top 60%',
-            scrub: 1
+            end: lightAnimations ? undefined : 'top 60%',
+            scrub: lightAnimations ? false : 1,
+            once: lightAnimations
           }
         }
       );
@@ -63,28 +66,31 @@ export default function TestimonialsSection() {
           {
             y: 0,
             opacity: 1,
-            duration: 0.8,
+            duration: lightAnimations ? 0.55 : 0.8,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: section,
               start: `top ${70 - index * 8}%`,
-              end: `top ${50 - index * 8}%`,
-              scrub: 1
+              end: lightAnimations ? undefined : `top ${50 - index * 8}%`,
+              scrub: lightAnimations ? false : 1,
+              once: lightAnimations
             }
           }
         );
 
         // Subtle parallax: as user scrolls past, cards drift
-        gsap.to(card, {
-          y: -10,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 2
-          }
-        });
+        if (!lightAnimations) {
+          gsap.to(card, {
+            y: -10,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 2
+            }
+          });
+        }
       });
     }, section);
 

@@ -398,6 +398,16 @@ input::placeholder, textarea::placeholder {
 
 /* Responsive */
 @media (max-width: 768px) {
+  .grain-overlay {
+    display: none;
+  }
+
+  .metric-card,
+  .testimonial-card,
+  .service-card {
+    backdrop-filter: none;
+  }
+
   .headline-xl {
     font-size: clamp(32px, 10vw, 48px);
   }
