@@ -186,21 +186,21 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
               {/* Center panel */}
               <div ref={panelRef} className="order-2 flex items-center justify-center lg:order-none">
                 <div className="relative w-full max-w-[320px] sm:max-w-[390px] lg:max-w-[500px]">
-                  <div className="relative mx-auto aspect-[4/5] overflow-hidden rounded-[28px] bg-[var(--fh-panel-dark)] shadow-[0_26px_90px_rgba(0,0,0,0.62)]">
+                  <div className="relative mx-auto aspect-[4/4.35] sm:aspect-[4/4.45] lg:aspect-[4/5] overflow-hidden rounded-[28px] bg-[var(--fh-panel-dark)] border border-[#D61E2B]/40 shadow-[0_0_0_1px_rgba(214,30,43,0.28),0_20px_55px_rgba(214,30,43,0.18),0_26px_90px_rgba(0,0,0,0.62)]">
                     <div
                       className="pointer-events-none absolute inset-0"
                       aria-hidden
                       style={{
                         boxShadow:
-                          '0 0 0 1px rgba(214,30,43,0.34) inset, 0 0 30px rgba(214,30,43,0.12)',
+                          '0 0 0 1px rgba(214,30,43,0.35) inset, 0 0 44px rgba(214,30,43,0.22)',
                       }}
                     />
 
-                    <div className="relative flex h-full items-center justify-center">
+                    <div className="relative flex h-full items-center justify-center bg-[radial-gradient(110%_90%_at_50%_40%,rgba(214,30,43,0.14)_0%,rgba(214,30,43,0.04)_40%,rgba(10,10,10,0.98)_100%)]">
                       <img
                         src={`${import.meta.env.BASE_URL}images/hero-center-composite.png`}
                         alt="FH device"
-                        className="hidden h-full w-full select-none object-contain lg:block"
+                        className="hidden h-full w-full select-none object-contain p-3 lg:block lg:p-4"
                         loading="eager"
                         decoding="async"
                         onError={(e) => {
@@ -210,7 +210,7 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
                       <img
                         src={`${import.meta.env.BASE_URL}images/hero-logo-main.png`}
                         alt="FH"
-                        className="h-full w-full select-none object-cover lg:hidden"
+                        className="h-full w-full select-none object-contain scale-[1.08] p-4 sm:scale-[1.06] sm:p-5 lg:hidden"
                         loading="eager"
                         decoding="async"
                       />
