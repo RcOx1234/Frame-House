@@ -100,10 +100,10 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
               }}
               href={item.href}
               onClick={(e) => handleItemClick(e, item.href)}
-              className="group opacity-0 transition-colors max-md:font-heading max-md:text-3xl max-md:font-bold max-md:tracking-wider max-md:text-off-white max-md:hover:text-[#FF4D5C] md:flex md:w-full md:flex-col md:items-center md:gap-3 md:rounded-2xl md:border md:border-white/15 md:bg-white/[0.06] md:px-5 md:py-7 md:text-center md:backdrop-blur-md md:hover:border-[#D12C3B]/45 md:hover:bg-white/[0.1]"
+              className="group opacity-0 transition-colors max-md:font-heading max-md:text-3xl max-md:font-bold max-md:tracking-wider max-md:text-off-white max-md:hover:text-white md:flex md:w-full md:flex-col md:items-center md:gap-3 md:rounded-2xl md:border md:border-white/15 md:bg-white/[0.06] md:px-5 md:py-7 md:text-center md:backdrop-blur-md md:hover:border-white/25 md:hover:bg-white/[0.1]"
             >
-              <Icon className="hidden h-8 w-8 shrink-0 text-[#E85A66] transition-transform duration-300 group-hover:scale-105 md:block md:h-9 md:w-9" />
-              <span className="font-heading font-bold tracking-wide text-off-white max-md:group-hover:text-[#FF4D5C] md:text-lg md:text-off-white md:group-hover:text-[#FF4D5C] lg:text-xl">
+              <Icon className="hidden h-8 w-8 shrink-0 text-white/85 transition-transform duration-300 group-hover:scale-105 group-hover:text-white md:block md:h-9 md:w-9" />
+              <span className="font-heading font-bold tracking-wide text-off-white max-md:group-hover:text-white md:text-lg md:text-off-white md:group-hover:text-white lg:text-xl">
                 {item.label}
               </span>
             </a>

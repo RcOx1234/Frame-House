@@ -112,9 +112,9 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
             <button
               type="button"
               onClick={onMenuOpen}
-              className="flex items-center gap-2 text-xs tracking-widest text-[var(--fh-text-white)]/85 transition-colors hover:text-[var(--fh-text-white)] md:text-sm"
+              className="group flex items-center gap-2 text-xs tracking-widest text-[var(--fh-text-white)]/85 transition-colors duration-200 hover:text-[#FF4D5C] md:text-sm"
             >
-              <Menu className="h-5 w-5 md:hidden" />
+              <Menu className="h-5 w-5 text-current md:hidden" />
               <span className="hidden md:inline">MENU</span>
             </button>
 
