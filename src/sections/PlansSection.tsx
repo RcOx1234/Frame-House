@@ -1,207 +1,204 @@
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Plan {
+  id: string;
   name: string;
-  videos: string;
-  featured?: boolean;
-  features: string[];
+  price: string;
   description: string;
+  objective: string;
+  includes: string[];
+  featured?: boolean;
+  cta: string;
 }
 
 const plans: Plan[] = [
-  { 
-    name: 'NORMAL', 
-    videos: '4 videos/mes',
-    features: ['4 videos/mes', 'Edición básica', 'Captions incluidos', '1 revisión', 'Entrega en 72h'],
-    description: 'Perfecto para empezar con contenido consistente'
+  {
+    id: 'impulso',
+    name: 'PLAN IMPULSO DIGITAL',
+    price: 'USD 280-300 / mes',
+    description: 'Ideal para negocios que quieren iniciar su presencia digital con constancia.',
+    objective: 'Mantener actividad constante y comenzar a generar interacción y consultas.',
+    includes: [
+      '4 videos mensuales (Reels / TikTok)',
+      '8 afiches promocionales',
+      'Copys enfocados en ventas',
+      'Calendario mensual + publicación estratégica',
+    ],
+    cta: 'Elegir plan',
   },
-  { 
-    name: 'PROFESIONAL', 
-    videos: '12 videos/mes', 
+  {
+    id: 'crecimiento',
+    name: 'PLAN CRECIMIENTO ACTIVO',
+    price: 'USD 460-500 / mes',
+    description: 'Para negocios que quieren aumentar ventas y destacar frente a la competencia.',
+    objective: 'Atraer clientes activamente y generar confianza en tu marca.',
+    includes: [
+      '8 videos mensuales estratégicos',
+      '16 a 20 afiches promocionales',
+      '2 sesiones mensuales con modelo',
+      'Historias + reporte mensual de resultados',
+    ],
     featured: true,
-    features: ['12 videos/mes', 'Edición + captions', 'Guía de publicación', '2 revisiones', 'Entrega en 48h'],
-    description: 'El plan más popular para escalar tu presencia'
+    cta: 'Agendar llamada',
   },
-  { 
-    name: 'PLAN DE ESTUDIO', 
-    videos: 'Producción + estrategia',
-    features: ['Videos ilimitados', 'Producción full-service', 'Estrategia de contenido', 'Revisiones ilimitadas', 'Soporte prioritario'],
-    description: 'Solución completa para marcas serias'
-  }
+  {
+    id: 'dominio',
+    name: 'PLAN DOMINIO DIGITAL',
+    price: 'USD 690-740 / mes',
+    description: 'Para marcas que buscan presencia fuerte y ventas constantes.',
+    objective: 'Dominar tu sector con contenido de alto impacto diario.',
+    includes: [
+      '16-18 videos mensuales',
+      'Afiches promocionales por campañas',
+      'Sesiones con modelo semanales',
+      'Estrategia avanzada + gestión básica',
+    ],
+    cta: 'Cotizar ahora',
+  },
 ];
 
 export default function PlansSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
-  const phoneRef = useRef<HTMLDivElement>(null);
-  const plansListRef = useRef<HTMLDivElement>(null);
-  const planItemsRef = useRef<(HTMLButtonElement | null)[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<Plan>(plans[1]); // Default to GROWTH
+  const [selectedPlan, setSelectedPlan] = useState<Plan>(() => {
+    try {
+      const stored = window.sessionStorage.getItem('fh_selected_plan');
+      return plans.find((p) => p.id === stored) ?? plans[1];
+    } catch {
+      return plans[1];
+    }
+  });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem('fh_selected_plan', selectedPlan.id);
+    } catch {
+      // ignore
+    }
+  }, [selectedPlan.id]);
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (contactSection) contactSection.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <section 
-      ref={sectionRef} 
-      className="section-flowing bg-charcoal z-50 min-h-screen"
-    >
-      {/* Mobile Layout */}
-      <div className="lg:hidden absolute inset-0 flex flex-col items-center justify-start pt-14 pb-8 px-6 overflow-y-auto">
-        {/* Headline */}
-        <div ref={headlineRef} className="text-center mb-6">
-          <h2 className="headline-xl text-off-white mb-2 text-3xl">
-            ELIGE UN PLAN
-          </h2>
-          <p className="text-base text-muted-warm">
-            Escala tu contenido sin construir un equipo.
-          </p>
-        </div>
+    <section className="section-flowing z-50 border-y border-white/10 bg-charcoal py-12 md:py-14">
+      <div className="px-6 md:px-[7vw]">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="grid grid-cols-1 gap-6 md:gap-7 lg:grid-cols-2 xl:gap-8 xl:[grid-template-columns:30%_42%_28%]">
+            <div className="order-1 max-w-[30rem] text-center md:text-left xl:self-center">
+              <p className="label-mono mb-3 text-muted-warm">PLANES MENSUALES</p>
+              <h2
+                className="font-heading mb-3 text-off-white uppercase font-black leading-[0.95]"
+                style={{ fontSize: 'clamp(1.75rem, 3.7vw, 3rem)' }}
+              >
+                <span className="md:hidden">ELIGE UN PLAN</span>
+                <span className="hidden md:inline">ELIGE UN PLAN PERFECTO PARA TU MARCA</span>
+              </h2>
+              <p className="text-sm leading-relaxed text-off-white/78 md:text-base">
+                Planes mensuales que incluyen producción audiovisual, diseño y estrategia. Ahorra hasta un
+                82% contratando un plan.
+              </p>
+              <p className="mt-3 hidden text-sm leading-relaxed text-muted-warm md:block md:text-[0.95rem]">
+                Tres niveles diseñados para diferentes etapas de tu negocio. Todos incluyen reuniones de
+                seguimiento y acceso directo al equipo.
+              </p>
+            </div>
 
-        {/* Plan Selector */}
-        <div className="flex gap-2 mb-6">
-          {plans.map((plan) => (
-            <button
-              key={plan.name}
-              onClick={() => setSelectedPlan(plan)}
-              className={`px-4 py-2 rounded-lg text-sm font-heading font-bold transition-all ${
-                selectedPlan.name === plan.name
-                  ? 'bg-burnt-orange text-white'
-                  : 'bg-white/10 text-off-white hover:bg-white/20'
+            <article
+              className={`order-2 overflow-hidden rounded-[22px] border transition-all duration-300 ${
+                selectedPlan.featured
+                  ? 'border-[#D12C3B]/42 bg-[linear-gradient(145deg,rgba(209,44,59,0.12)_0%,rgba(10,10,10,0.98)_62%)]'
+                  : 'border-white/14 bg-[linear-gradient(145deg,rgba(255,255,255,0.05)_0%,rgba(10,10,10,0.98)_65%)]'
               }`}
             >
-              {plan.name}
-            </button>
-          ))}
-        </div>
+              <div className="relative h-[145px] w-full sm:h-[165px] md:h-[180px]">
+                <img
+                  src={`${import.meta.env.BASE_URL}images/plan-growth.jpg`}
+                  alt="Plan recomendado"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-[#0B0D10]/95" />
+                {selectedPlan.featured && (
+                  <span className="label-mono absolute left-3 top-3 rounded-full border border-[#D12C3B]/40 bg-[#D12C3B]/14 px-2.5 py-1 text-[9px] text-[#FF9CA5]">
+                    MÁS POPULAR
+                  </span>
+                )}
+              </div>
 
-        {/* Featured Plan Card */}
-        <div 
-          ref={phoneRef}
-          className="w-full max-w-sm rounded-2xl overflow-hidden mb-6 relative"
-          style={{
-            background: selectedPlan.featured 
-              ? 'linear-gradient(135deg, rgba(184, 92, 56, 0.15) 0%, rgba(184, 92, 56, 0.05) 100%)'
-              : 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
-            border: selectedPlan.featured ? '1px solid rgba(184, 92, 56, 0.3)' : '1px solid rgba(255,255,255,0.1)'
-          }}
-        >
-          <div className="p-6">
-            {selectedPlan.featured && (
-              <span className="label-mono text-burnt-orange mb-2 block text-xs">POPULAR</span>
-            )}
-            <h3 className="font-heading font-bold text-2xl text-off-white mb-2 tracking-wide">
-              {selectedPlan.name}
-            </h3>
-            <p className="text-muted-warm text-sm mb-4">{selectedPlan.description}</p>
-            
-            <ul className="space-y-2 mb-6">
-              {selectedPlan.features.map((feature) => (
-                <li key={feature} className="text-off-white/80 text-sm flex items-center gap-2">
-                  <Check className="w-4 h-4 text-burnt-orange" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            
-            <button 
-              onClick={scrollToContact}
-              className="btn-primary w-full"
-            >
-              Agendar llamada
-            </button>
+              <div className="p-4 sm:p-5 md:p-6">
+                <h3 className="font-heading text-lg font-bold tracking-wide text-off-white md:text-xl">
+                  {selectedPlan.name}
+                </h3>
+                <p className="mt-1.5 text-sm font-semibold text-[#FF8B97] md:text-base">{selectedPlan.price}</p>
+                <p className="mt-2 text-sm text-off-white/85">{selectedPlan.description}</p>
+
+                <ul className="mt-4 space-y-2">
+                  {selectedPlan.includes.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5 text-sm text-off-white/90">
+                      <Check className="mt-0.5 h-3.5 w-3.5 text-[#FF8B97]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="mt-4 text-xs text-muted-warm md:text-sm">{selectedPlan.objective}</p>
+
+                <div className="mt-5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedPlan.featured) scrollToContact();
+                      else navigate('/plan-personalizado');
+                    }}
+                    className="btn-primary w-full rounded-xl py-2.5 text-sm font-semibold"
+                  >
+                    {selectedPlan.cta}
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <div className="order-3 lg:col-span-2 xl:col-span-1 xl:self-center xl:pt-6">
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-1">
+                {plans.map((plan) => {
+                  const active = selectedPlan.id === plan.id;
+                  return (
+                    <button
+                      key={plan.id}
+                      type="button"
+                      onClick={() => setSelectedPlan(plan)}
+                      className={`w-full rounded-xl border p-3.5 text-left transition-all duration-300 md:p-4 ${
+                        active ? 'border-white/30 bg-white/12' : 'border-white/10 bg-black/45 hover:border-white/20'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <h4 className="font-heading text-[0.95rem] font-bold tracking-wide text-off-white md:text-base">
+                          {plan.name}
+                        </h4>
+                        {plan.featured && (
+                          <span className="rounded-full border border-[#D12C3B]/40 bg-[#D12C3B]/12 px-2 py-0.5 text-[9px] font-semibold tracking-wide text-[#FF9CA5]">
+                            RECOMENDADO
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-xs font-semibold text-[#FF8B97] sm:text-sm">{plan.price}</p>
+                      <p className="mt-1.5 text-xs text-muted-warm sm:text-sm">{plan.description}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Desktop Layout */}
-      <div className="hidden lg:block">
-        {/* Left Headline */}
-        <div 
-          ref={headlineRef}
-          className="absolute left-[6vw] top-1/2 -translate-y-1/2 w-[24vw] z-30"
-        >
-          <h2 className="headline-xl text-off-white mb-4">
-            ELIGE UN PLAN
-          </h2>
-          <p className="text-xl text-muted-warm font-light">
-            Escala tu contenido sin construir un equipo.
-          </p>
-        </div>
-
-        {/* Center Phone Frame - Featured Plan */}
-        <div 
-          ref={phoneRef}
-          className="absolute left-[52%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-[31vw] h-[80vh] phone-frame z-20"
-        >
-          <img 
-            src={`${import.meta.env.BASE_URL}images/plan-growth.jpg`} 
-            alt="Growth Plan"
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
-            decoding="async"
-            onError={(e) => console.error('Image failed to load:', e)}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D10] via-[#0B0D10]/70 to-transparent" />
-          
-          {/* Plan Content Overlay */}
-          <div className="absolute inset-0 flex flex-col justify-end p-8">
-            {selectedPlan.featured && (
-              <span className="label-mono text-burnt-orange mb-2">POPULAR</span>
-            )}
-            <h3 className="font-heading font-bold text-3xl text-off-white mb-2 tracking-wide">
-              {selectedPlan.name}
-            </h3>
-            <p className="text-muted-warm text-sm mb-4">{selectedPlan.description}</p>
-            
-            <ul className="space-y-2 mb-6">
-              {selectedPlan.features.map((feature) => (
-                <li key={feature} className="text-off-white/80 text-sm flex items-center gap-2">
-                  <Check className="w-4 h-4 text-burnt-orange" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            
-            <button 
-              onClick={scrollToContact}
-              className="btn-primary w-full"
-            >
-              Agendar llamada
-            </button>
-          </div>
-        </div>
-
-        {/* Right Plans List */}
-        <div 
-          ref={plansListRef}
-          className="absolute left-[74vw] top-1/2 -translate-y-1/2 w-[20vw] z-30"
-        >
-          <div className="space-y-4">
-            {plans.map((plan, index) => (
-              <button 
-                key={plan.name}
-                onClick={() => setSelectedPlan(plan)}
-                ref={el => { planItemsRef.current[index] = el; }}
-                className={`w-full p-6 rounded-xl cursor-pointer transition-all duration-300 text-left ${
-                  selectedPlan.name === plan.name
-                    ? 'bg-[#4A4A4A]/65 border border-white/30'
-                    : 'bg-black/55 border border-white/10 hover:bg-black/70'
-                }`}
-              >
-                <h4 className="font-heading font-bold text-off-white text-lg tracking-wide mb-1">
-                  {plan.name}
-                </h4>
-                <p className="text-muted-warm text-sm">
-                  {plan.videos}
-                </p>
-              </button>
-            ))}
+          <div className="mt-4 flex justify-center text-center">
+            <p className="inline-block text-xs text-muted-warm md:text-sm">
+              Todos los planes incluyen seguimiento mensual y acceso directo al equipo.
+            </p>
           </div>
         </div>
       </div>

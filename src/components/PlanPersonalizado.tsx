@@ -13,9 +13,9 @@ const productosData: Producto[] = [
 ];
 
 const planesData: PlanOption[] = [
-    { value: 'basico', price: 80, name: 'Plan Básico', label: 'Plan Básico - $80' },
-    { value: 'profesional', price: 120, name: 'Plan Profesional', label: 'Plan Profesional - $120' },
-    { value: 'estudio', price: 3000, name: 'Plan Estudio', label: 'Plan Estudio - $3,000' },
+    { value: 'impulso', price: 290, name: 'Plan Impulso Digital', label: 'Plan Impulso Digital - USD 280–300 / mes' },
+    { value: 'crecimiento', price: 480, name: 'Plan Crecimiento Activo', label: 'Plan Crecimiento Activo - USD 460–500 / mes' },
+    { value: 'dominio', price: 715, name: 'Plan Dominio Digital', label: 'Plan Dominio Digital - USD 690–740 / mes' },
 ];
 
 export default function PlanPersonalizado() {
@@ -26,6 +26,7 @@ export default function PlanPersonalizado() {
     const [productosSeleccionados, setProductosSeleccionados] = useState<string[]>([]);
     const [mensajeVisible, setMensajeVisible] = useState<'copiado' | 'contacto' | null>(null);
     const [missingRequired, setMissingRequired] = useState(false);
+    const [planError, setPlanError] = useState(false);
     const navigate = useNavigate();
 
     const planActual = planesData.find(p => p.value === planSeleccionado);
@@ -58,11 +59,10 @@ export default function PlanPersonalizado() {
         setMissingRequired(false);
 
         if (!planActual) {
-            const select = document.querySelector('.form-select') as HTMLElement;
-            select?.classList.add('error-shake');
-            setTimeout(() => select?.classList.remove('error-shake'), 500);
+            setPlanError(true);
             return;
         }
+        setPlanError(false);
 
         const productosTexto = productosSeleccionados.length > 0 
             ? productosSeleccionados.map(id => {
@@ -166,9 +166,13 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                 <div className="form-group">
                     <label className="form-label">Selecciona tu plan</label>
                     <select 
-                        className="form-select"
+                        className={`form-select ${planError ? 'error-shake' : ''}`}
                         value={planSeleccionado}
-                        onChange={(e) => setPlanSeleccionado(e.target.value)}
+                        onFocus={() => setPlanError(false)}
+                        onChange={(e) => {
+                            setPlanSeleccionado(e.target.value);
+                            setPlanError(false);
+                        }}
                     >
                         <option value="">-- Elige un plan --</option>
                         {planesData.map(plan => (
