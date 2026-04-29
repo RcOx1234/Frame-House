@@ -195,8 +195,8 @@ export default function PlansSection() {
             </div>
           </div>
 
-          <div className="mt-4 flex justify-center text-center">
-            <p className="inline-block text-xs text-muted-warm md:text-sm">
+          <div className="mt-4 text-center lg:relative lg:left-1/2 lg:w-max lg:-translate-x-1/2">
+            <p className="inline-block text-xs text-muted-warm md:whitespace-nowrap md:text-sm">
               Todos los planes incluyen seguimiento mensual y acceso directo al equipo.
             </p>
           </div>

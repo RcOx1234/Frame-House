@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Play } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import VideoModal from '../components/VideoModal';
 import { shouldUseLightAnimations } from '../lib/motion';
 
@@ -167,13 +168,13 @@ export default function PortfolioSection() {
 
           {/* Link */}
           <div className="mt-8 md:mt-12">
-            <a 
-              href="#portfolio-spotlight" 
+            <Link 
+              to="/trabajos"
               className="inline-flex items-center gap-2 text-burnt-orange hover:text-off-white transition-colors font-medium group text-sm md:text-base"
             >
-              Ver archivo completo
+              Ver Galeria
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Link>
           </div>
         </div>
       </section>

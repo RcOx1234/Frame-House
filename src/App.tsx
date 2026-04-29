@@ -2,7 +2,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Toaster } from 'sonner';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { ChevronUp } from 'lucide-react';
 
 import HeroSection from './sections/HeroSection';
@@ -15,6 +15,7 @@ import PortfolioSection from './sections/PortfolioSection';
 import TestimonialsSection from './sections/TestimonialsSection';
 import ContactSection from './sections/ContactSection';
 import MenuOverlay from './components/MenuOverlay';
+import TrabajosPage from './pages/TrabajosPage';
 const PlanPersonalizado = lazy(() => import('./components/PlanPersonalizado'));
 
 import './App.css';
@@ -25,10 +26,19 @@ gsap.registerPlugin(ScrollTrigger);
 function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [pageVisible, setPageVisible] = useState(false);
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => setPageVisible(true));
+    return () => window.cancelAnimationFrame(frameId);
+  }, []);
 
   useEffect(() => {
     const hash = window.location.hash;
-    if (!hash || hash.length < 2) return;
+    if (!hash || hash.length < 2) {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      return;
+    }
     const el = document.querySelector(hash);
     if (!el) return;
     // Defer to ensure section mounted
@@ -66,7 +76,7 @@ function HomePage() {
   };
 
   return (
-    <div className="relative bg-charcoal min-h-screen">
+    <div className={`relative bg-charcoal min-h-screen transition-opacity duration-300 ${pageVisible ? 'opacity-100' : 'opacity-0'}`}>
       <div className="grain-overlay" />
 
       <Toaster 
@@ -117,6 +127,12 @@ function HomePage() {
 
 // App con rutas
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
@@ -128,6 +144,7 @@ function App() {
           </Suspense>
         }
       />
+      <Route path="/trabajos" element={<TrabajosPage />} />
     </Routes>
   );
 }
