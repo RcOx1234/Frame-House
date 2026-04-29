@@ -52,7 +52,7 @@ const PROJECTS: Project[] = [
     client: 'Bolones Picapiedra',
     type: 'video',
     category: 'Videos',
-    thumbnail: 'https://ik.imagekit.io/ObamaRS12/Frame%20House/FH.jpg',
+    thumbnail: 'https://ik.imagekit.io/ObamaRS12/Frame%20House/Portafolio/Galeria/ese.jpg',
     previewVideo: 'https://res.cloudinary.com/dolxglacq/video/upload/q_auto/f_auto/v1776649769/Video_Prom_2_cdxhzd.mp4',
     duration: '00:22',
     platform: 'TikTok / Instagram',
@@ -134,6 +134,20 @@ const PROJECTS: Project[] = [
     tags: ['portfolio', 'web', 'uxui'],
     format: 'Website',
     siteUrl: 'https://instagram.com'
+  },
+  {
+    id: 'FH-WEB-013',
+    title: 'Verde y Cafe Experience',
+    client: 'Cafeteria Verde & Cafe',
+    type: 'web',
+    category: 'Webs',
+    thumbnail: 'https://ik.imagekit.io/ObamaRS12/Frame%20House/Portafolio/Galeria/logo_verde-y-cafe3.jpg?updatedAt=1777500506231',
+    platform: 'Web',
+    description:
+      'Sitio web con enfoque en marca local, menu destacado y experiencia visual calida para convertir visitas en pedidos.',
+    tags: ['react', 'web', 'branding', 'local-business', 'ux'],
+    format: 'Website',
+    siteUrl: 'https://verde-cafe-manta.vercel.app/'
   }
 ];
 
@@ -157,6 +171,7 @@ export default function TrabajosPage() {
   const modalOverlayRef = useRef<HTMLDivElement>(null);
   const modalPanelRef = useRef<HTMLDivElement>(null);
   const hasMountedRef = useRef(false);
+  const previousVisibleCountRef = useRef(6);
 
   const filteredProjects = useMemo(() => {
     const ranked = [...PROJECTS].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
@@ -175,6 +190,7 @@ export default function TrabajosPage() {
 
   useEffect(() => {
     setVisibleCount(6);
+    previousVisibleCountRef.current = 6;
   }, [activeFilter]);
 
   const closeModal = useCallback(() => {
@@ -201,6 +217,20 @@ export default function TrabajosPage() {
     window.addEventListener('keydown', onEscape);
     return () => window.removeEventListener('keydown', onEscape);
   }, [closeModal, selectedProject]);
+
+  useEffect(() => {
+    if (!selectedProject) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousTouchAction = document.body.style.touchAction;
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.touchAction = previousTouchAction;
+    };
+  }, [selectedProject]);
 
   useEffect(() => {
     const root = pageRef.current;
@@ -277,18 +307,49 @@ export default function TrabajosPage() {
   }, [selectedProject]);
 
   useEffect(() => {
-    if (!gridRef.current) return;
+    const grid = gridRef.current;
+    if (!grid) return;
     if (!hasMountedRef.current) {
       hasMountedRef.current = true;
+      previousVisibleCountRef.current = visibleCount;
       return;
     }
 
+    const previousCount = previousVisibleCountRef.current;
+    const currentCount = visibleCount;
+    previousVisibleCountRef.current = currentCount;
+
+    if (currentCount <= previousCount) return;
+
+    const cards = Array.from(grid.querySelectorAll('button'));
+    const newCards = cards.slice(previousCount, currentCount);
+    if (newCards.length === 0) return;
+
     gsap.fromTo(
-      gridRef.current,
-      { opacity: 0.28 },
-      { opacity: 1, duration: 0.22, ease: 'power1.out' }
+      newCards,
+      { opacity: 0, y: 10 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.26,
+        stagger: 0.07,
+        ease: 'power2.out',
+        clearProps: 'opacity,transform'
+      }
     );
-  }, [activeFilter, visibleCount]);
+  }, [visibleCount]);
+
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    if (!hasMountedRef.current) return;
+
+    gsap.fromTo(
+      grid,
+      { opacity: 0.45 },
+      { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'opacity' }
+    );
+  }, [activeFilter]);
 
   const handleCopyReference = async (ref: string) => {
     try {
