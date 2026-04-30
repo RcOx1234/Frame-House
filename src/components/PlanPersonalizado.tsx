@@ -1,7 +1,7 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import '../styles/PlanPersonalizado.css';
 import type { Producto, PlanOption } from '../types/planTypes';
 
@@ -24,6 +24,15 @@ const WHATSAPP_E164 = '593991433792';
 const WHATSAPP_DISPLAY = '099 143 3792';
 const WHATSAPP_INTERNACIONAL = '+593 99 143 3792';
 
+function hashFnv1aHex(input: string): string {
+    let hash = 0x811c9dc5;
+    for (let i = 0; i < input.length; i++) {
+        hash ^= input.charCodeAt(i);
+        hash = Math.imul(hash, 0x01000193);
+    }
+    return (hash >>> 0).toString(16).padStart(8, '0');
+}
+
 export default function PlanPersonalizado() {
     const [searchParams] = useSearchParams();
     const preselectedPlan = searchParams.get('plan');
@@ -40,14 +49,14 @@ export default function PlanPersonalizado() {
     ));
     const [productosSeleccionados, setProductosSeleccionados] = useState<string[]>([]);
     const [mensajeVisible, setMensajeVisible] = useState(false);
+    const [tipoAviso, setTipoAviso] = useState<'exito' | 'duplicado'>('exito');
     const [missingRequired, setMissingRequired] = useState(false);
     const [planError, setPlanError] = useState(false);
     const [enviando, setEnviando] = useState(false);
     const [errorFirebase, setErrorFirebase] = useState<string | null>(null);
     const [empresaRequerida, setEmpresaRequerida] = useState(false);
-    const [linkWhatsappFallback, setLinkWhatsappFallback] = useState<string | null>(null);
+    const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
     const navigate = useNavigate();
-    const whatsappTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const nombreRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const empresaRef = useRef<HTMLInputElement>(null);
@@ -68,12 +77,6 @@ export default function PlanPersonalizado() {
         }
     }, [preselectedPlan]);
 
-    useEffect(() => {
-        return () => {
-            if (whatsappTimeoutRef.current) clearTimeout(whatsappTimeoutRef.current);
-        };
-    }, []);
-
     const planActual = planesData.find(p => p.value === planSeleccionado);
     const subtotalPlan = planActual?.price || 0;
     const subtotalProductos = productosSeleccionados.reduce((total, prodId) => {
@@ -91,6 +94,7 @@ export default function PlanPersonalizado() {
     };
 
     const mostrarExito = () => {
+        setTipoAviso('exito');
         setMensajeVisible(true);
         setTimeout(() => setMensajeVisible(false), 9000);
     };
@@ -98,6 +102,19 @@ export default function PlanPersonalizado() {
     const productosDetalleSeleccionados = productosSeleccionados
         .map((id) => productosData.find((p) => p.id === id))
         .filter((p): p is Producto => Boolean(p));
+
+    // Dedupe sin lecturas: con tus Rules, `read` requiere auth; así que usamos ID determinístico.
+    // Si existe el mismo ID, Firestore lo trata como `update` y lo deniega (solo allow create).
+    const fingerprintEnvio = useMemo(() => {
+        const normalized = {
+            nombre: nombre.trim(),
+            email: email.trim().toLowerCase(),
+            empresa: empresa.trim(),
+            plan: planSeleccionado,
+            productos: [...productosSeleccionados].sort(),
+        };
+        return hashFnv1aHex(JSON.stringify(normalized));
+    }, [nombre, email, empresa, planSeleccionado, productosSeleccionados]);
 
     /** Mensaje que va en `?text=` de wa.me (*negrita* estilo WhatsApp). Sin enlace dentro para no alargar la URL. */
     const construirMensajeWhatsapp = (plan: PlanOption): string => {
@@ -148,6 +165,7 @@ _Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
     const guardarEnFirebase = async (plan: PlanOption): Promise<GuardarResultado> => {
         const payload = {
             tipo: 'plan_personalizado' as const,
+            fingerprint: fingerprintEnvio,
             cliente: {
                 nombre: nombre.trim(),
                 email: email.trim().toLowerCase(),
@@ -173,9 +191,14 @@ _Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
         };
 
         try {
-            await addDoc(collection(db, 'cotizaciones'), payload);
-            return { ok: true, docId: 'auto' };
-        } catch (error) {
+            await setDoc(doc(db, 'cotizaciones', fingerprintEnvio), payload, { merge: false });
+            return { ok: true, docId: fingerprintEnvio };
+        } catch (error: any) {
+            const code = typeof error?.code === 'string' ? error.code : '';
+            // Con tus reglas: create permitido, update NO. Si ya existe el doc => es update => permission-denied.
+            if (code === 'permission-denied' || code === 'PERMISSION_DENIED') {
+                return { ok: false, mensaje: '__DUPLICADO__' };
+            }
             const mensaje =
                 error instanceof Error ? error.message : 'No se pudo guardar en la base de datos.';
             console.error('Error al guardar cotización:', error);
@@ -185,11 +208,7 @@ _Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
 
     const enviarDatos = async () => {
         setErrorFirebase(null);
-        setLinkWhatsappFallback(null);
-        if (whatsappTimeoutRef.current) {
-            clearTimeout(whatsappTimeoutRef.current);
-            whatsappTimeoutRef.current = null;
-        }
+        setWhatsappUrl(null);
 
         if (!nombre.trim()) {
             setMissingRequired(true);
@@ -228,18 +247,18 @@ _Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
         setEnviando(false);
 
         if (!resultadoFirebase.ok) {
+            if (resultadoFirebase.mensaje === '__DUPLICADO__') {
+                setTipoAviso('duplicado');
+                setMensajeVisible(true);
+                setTimeout(() => setMensajeVisible(false), 4000);
+                return;
+            }
             setErrorFirebase(resultadoFirebase.mensaje);
             return;
         }
 
-        const urlWhatsapp = construirUrlWhatsapp(planActual);
+        setWhatsappUrl(construirUrlWhatsapp(planActual));
         mostrarExito();
-
-        whatsappTimeoutRef.current = window.setTimeout(() => {
-            whatsappTimeoutRef.current = null;
-            const w = window.open(urlWhatsapp, '_blank', 'noopener,noreferrer');
-            if (!w) setLinkWhatsappFallback(urlWhatsapp);
-        }, 3000);
     };
 
     return (
@@ -380,13 +399,21 @@ _Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
                               d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                     </svg>
                 </button>
-                {linkWhatsappFallback && (
-                    <p className="plan-whatsapp-fallback" role="status">
-                        El navegador bloqueó la ventana nueva.{' '}
-                        <a href={linkWhatsappFallback} target="_blank" rel="noopener noreferrer">
-                            Abrir WhatsApp en otra pestaña
-                        </a>
-                    </p>
+                {whatsappUrl && (
+                    <a
+                        className="btn-whatsapp"
+                        href={whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <span>Contactar por WhatsApp</span>
+                        <svg viewBox="0 0 32 32" width="18" height="18" aria-hidden>
+                            <path
+                                fill="currentColor"
+                                d="M19.11 17.21c-.28-.14-1.64-.81-1.89-.9-.25-.09-.44-.14-.62.14-.18.28-.71.9-.87 1.09-.16.18-.32.21-.6.07-.28-.14-1.17-.43-2.24-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.12-.12.28-.32.41-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.5-.07-.14-.62-1.5-.85-2.06-.22-.53-.44-.46-.62-.47h-.53c-.18 0-.46.07-.71.35-.25.28-.92.9-.92 2.2s.94 2.56 1.07 2.73c.14.18 1.84 2.8 4.45 3.93.62.27 1.1.43 1.47.55.62.2 1.18.17 1.62.1.5-.07 1.64-.67 1.87-1.32.23-.64.23-1.19.16-1.32-.07-.14-.25-.21-.53-.35ZM16.04 4.5c-6.08 0-11.03 4.95-11.03 11.03 0 1.94.51 3.84 1.48 5.52l-1.57 5.74 5.88-1.54a10.98 10.98 0 0 0 5.24 1.34h.01c6.08 0 11.03-4.95 11.03-11.03S22.12 4.5 16.04 4.5Zm0 20.15h-.01c-1.66 0-3.28-.44-4.7-1.27l-.34-.2-3.49.91.93-3.41-.22-.35a9.12 9.12 0 0 1-1.4-4.86c0-5.03 4.09-9.12 9.12-9.12s9.12 4.09 9.12 9.12-4.09 9.18-9.01 9.18Z"
+                            />
+                        </svg>
+                    </a>
                 )}
                 {errorFirebase && (
                     <p className="plan-firebase-error" role="alert">
@@ -408,7 +435,9 @@ _Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
             <div className={`message ${mensajeVisible ? 'show' : ''}`}>
                 <div className="message-title">✅ Listo</div>
                 <div className="message-text">
-                    Tus datos quedaron guardados. En unos segundos se abrirá WhatsApp ({WHATSAPP_INTERNACIONAL}) en una pestaña nueva con tu mensaje. Si no se abre, permite ventanas emergentes o usa el enlace que aparece debajo del botón.
+                    {tipoAviso === 'duplicado'
+                        ? 'Tu información ya se encuentra registrada.'
+                        : 'Datos guardados correctamente. Si deseas, contáctanos por WhatsApp.'}
                 </div>
             </div>
         </div>

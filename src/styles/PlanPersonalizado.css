@@ -382,6 +382,42 @@
     display: none;
 }
 
+.btn-whatsapp {
+    width: 100%;
+    margin-top: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.2px;
+    color: #eafff0;
+    background: linear-gradient(180deg, rgba(34, 160, 90, 1) 0%, rgba(23, 126, 69, 1) 100%);
+    border: 1px solid rgba(80, 200, 120, 0.35);
+    box-shadow: 0 10px 30px rgba(34, 160, 90, 0.22);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(34, 160, 90, 0.28);
+    filter: saturate(1.05);
+}
+
+.btn-whatsapp:active {
+    transform: translateY(0) scale(0.99);
+}
+
+.btn-whatsapp svg {
+    flex-shrink: 0;
+}
+
 .plan-firebase-error {
     margin-top: 12px;
     padding: 12px 14px;
