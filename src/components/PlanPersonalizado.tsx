@@ -1,4 +1,4 @@
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
@@ -23,32 +23,6 @@ const planesData: PlanOption[] = [
 const WHATSAPP_E164 = '593991433792';
 const WHATSAPP_DISPLAY = '099 143 3792';
 const WHATSAPP_INTERNACIONAL = '+593 99 143 3792';
-
-/** ID de documento Firestore a partir del nombre de empresa (sin barra `/`). */
-function idDocumentoDesdeEmpresa(empresaRaw: string): string {
-    const id = empresaRaw
-        .trim()
-        .replace(/\//g, '-')
-        .replace(/\s+/g, ' ')
-        .slice(0, 700);
-    return id;
-}
-
-/** Primera petición: `MiEmpresa`. Siguientes: `MiEmpresa_2`, `MiEmpresa_3`, … */
-async function siguienteIdCotizacion(empresaRaw: string): Promise<string> {
-    const base = idDocumentoDesdeEmpresa(empresaRaw);
-    if (!base) return `sin-empresa_${Date.now()}`;
-    let candidate = base;
-    let n = 0;
-    const maxIntentos = 200;
-    for (let i = 0; i < maxIntentos; i++) {
-        const snap = await getDoc(doc(db, 'cotizaciones', candidate));
-        if (!snap.exists()) return candidate;
-        n += 1;
-        candidate = `${base}_${n + 1}`;
-    }
-    return `${base}_${Date.now()}`;
-}
 
 export default function PlanPersonalizado() {
     const [searchParams] = useSearchParams();
@@ -172,8 +146,6 @@ _Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
         | { ok: false; mensaje: string };
 
     const guardarEnFirebase = async (plan: PlanOption): Promise<GuardarResultado> => {
-        const docId = await siguienteIdCotizacion(empresa);
-
         const payload = {
             tipo: 'plan_personalizado' as const,
             cliente: {
@@ -201,8 +173,8 @@ _Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
         };
 
         try {
-            await setDoc(doc(db, 'cotizaciones', docId), payload);
-            return { ok: true, docId };
+            await addDoc(collection(db, 'cotizaciones'), payload);
+            return { ok: true, docId: 'auto' };
         } catch (error) {
             const mensaje =
                 error instanceof Error ? error.message : 'No se pudo guardar en la base de datos.';
