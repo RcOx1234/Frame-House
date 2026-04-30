@@ -137,7 +137,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 'FH-WEB-013',
-    title: 'Verde y Cafe Experience',
+    title: 'Cafeteria Verde & Cafe',
     client: 'Cafeteria Verde & Cafe',
     type: 'web',
     category: 'Webs',

@@ -1,5 +1,7 @@
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import '../styles/PlanPersonalizado.css';
 import type { Producto, PlanOption } from '../types/planTypes';
 
@@ -18,16 +20,85 @@ const planesData: PlanOption[] = [
     { value: 'dominio', price: 715, name: 'Plan Dominio Digital', label: 'Plan Dominio Digital - USD 690–740 / mes' },
 ];
 
+const WHATSAPP_E164 = '593991433792';
+const WHATSAPP_DISPLAY = '099 143 3792';
+const WHATSAPP_INTERNACIONAL = '+593 99 143 3792';
+
+/** ID de documento Firestore a partir del nombre de empresa (sin barra `/`). */
+function idDocumentoDesdeEmpresa(empresaRaw: string): string {
+    const id = empresaRaw
+        .trim()
+        .replace(/\//g, '-')
+        .replace(/\s+/g, ' ')
+        .slice(0, 700);
+    return id;
+}
+
+/** Primera petición: `MiEmpresa`. Siguientes: `MiEmpresa_2`, `MiEmpresa_3`, … */
+async function siguienteIdCotizacion(empresaRaw: string): Promise<string> {
+    const base = idDocumentoDesdeEmpresa(empresaRaw);
+    if (!base) return `sin-empresa_${Date.now()}`;
+    let candidate = base;
+    let n = 0;
+    const maxIntentos = 200;
+    for (let i = 0; i < maxIntentos; i++) {
+        const snap = await getDoc(doc(db, 'cotizaciones', candidate));
+        if (!snap.exists()) return candidate;
+        n += 1;
+        candidate = `${base}_${n + 1}`;
+    }
+    return `${base}_${Date.now()}`;
+}
+
 export default function PlanPersonalizado() {
+    const [searchParams] = useSearchParams();
+    const preselectedPlan = searchParams.get('plan');
+    const isValidPlan = (value: string | null): value is string => {
+        if (!value) return false;
+        return planesData.some((plan) => plan.value === value);
+    };
+
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [empresa, setEmpresa] = useState('');
-    const [planSeleccionado, setPlanSeleccionado] = useState('');
+    const [planSeleccionado, setPlanSeleccionado] = useState(() => (
+        isValidPlan(preselectedPlan) ? preselectedPlan : ''
+    ));
     const [productosSeleccionados, setProductosSeleccionados] = useState<string[]>([]);
-    const [mensajeVisible, setMensajeVisible] = useState<'copiado' | 'contacto' | null>(null);
+    const [mensajeVisible, setMensajeVisible] = useState(false);
     const [missingRequired, setMissingRequired] = useState(false);
     const [planError, setPlanError] = useState(false);
+    const [enviando, setEnviando] = useState(false);
+    const [errorFirebase, setErrorFirebase] = useState<string | null>(null);
+    const [empresaRequerida, setEmpresaRequerida] = useState(false);
+    const [linkWhatsappFallback, setLinkWhatsappFallback] = useState<string | null>(null);
     const navigate = useNavigate();
+    const whatsappTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const nombreRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
+    const empresaRef = useRef<HTMLInputElement>(null);
+    const planSelectRef = useRef<HTMLSelectElement>(null);
+
+    const enfocarCampo = (el: HTMLElement | null) => {
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        requestAnimationFrame(() => {
+            el.focus({ preventScroll: true });
+        });
+    };
+
+    useEffect(() => {
+        if (isValidPlan(preselectedPlan)) {
+            setPlanSeleccionado(preselectedPlan);
+            setPlanError(false);
+        }
+    }, [preselectedPlan]);
+
+    useEffect(() => {
+        return () => {
+            if (whatsappTimeoutRef.current) clearTimeout(whatsappTimeoutRef.current);
+        };
+    }, []);
 
     const planActual = planesData.find(p => p.value === planSeleccionado);
     const subtotalPlan = planActual?.price || 0;
@@ -45,68 +116,158 @@ export default function PlanPersonalizado() {
         );
     };
 
-    const mostrarMensaje = (tipo: 'copiado' | 'contacto') => {
-        setMensajeVisible(tipo);
-        setTimeout(() => setMensajeVisible(null), 4000);
+    const mostrarExito = () => {
+        setMensajeVisible(true);
+        setTimeout(() => setMensajeVisible(false), 9000);
     };
 
-    const copiarAlPortapapeles = async () => {
-        const hasRequired = nombre.trim().length > 0 && email.trim().length > 0;
-        if (!hasRequired) {
+    const productosDetalleSeleccionados = productosSeleccionados
+        .map((id) => productosData.find((p) => p.id === id))
+        .filter((p): p is Producto => Boolean(p));
+
+    /** Mensaje que va en `?text=` de wa.me (*negrita* estilo WhatsApp). Sin enlace dentro para no alargar la URL. */
+    const construirMensajeWhatsapp = (plan: PlanOption): string => {
+        const productosTexto =
+            productosDetalleSeleccionados.length > 0
+                ? productosDetalleSeleccionados
+                      .map((prod) => `• ${prod.nombre} — $${prod.precio.toLocaleString('es-ES')} USD`)
+                      .join('\n')
+                : '• Ninguno';
+
+        return `*✨ Cotización — Plan personalizado Frame House*
+
+*👤 Datos del cliente*
+📝 Nombre: ${nombre.trim()}
+✉️ Email: ${email.trim()}
+🏢 Empresa: ${empresa.trim()}
+
+*📦 Plan elegido*
+${plan.name}
+💵 $${plan.price.toLocaleString('es-ES')} USD — ${plan.label}
+
+*➕ Productos adicionales*
+${productosTexto}
+
+*💰 Total estimado:* $${total.toLocaleString('es-ES')} USD
+
+🕐 ${new Date().toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' })}
+
+_Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
+    };
+
+    const construirUrlWhatsapp = (plan: PlanOption): string => {
+        const base = `https://wa.me/${WHATSAPP_E164}?text=`;
+        let msg = construirMensajeWhatsapp(plan);
+        const maxUrlLen = 7500;
+        let url = base + encodeURIComponent(msg);
+        while (url.length > maxUrlLen && msg.length > 120) {
+            msg = `${msg.slice(0, Math.floor(msg.length * 0.82))}…`;
+            url = base + encodeURIComponent(msg);
+        }
+        return url;
+    };
+
+    type GuardarResultado =
+        | { ok: true; docId: string }
+        | { ok: false; mensaje: string };
+
+    const guardarEnFirebase = async (plan: PlanOption): Promise<GuardarResultado> => {
+        const docId = await siguienteIdCotizacion(empresa);
+
+        const payload = {
+            tipo: 'plan_personalizado' as const,
+            cliente: {
+                nombre: nombre.trim(),
+                email: email.trim().toLowerCase(),
+                empresa: empresa.trim(),
+            },
+            plan: {
+                valor: plan.value,
+                nombre: plan.name,
+                precioUsd: plan.price,
+                etiquetaLista: plan.label,
+            },
+            productosAdicionales: productosDetalleSeleccionados.map((p) => ({
+                id: p.id,
+                nombre: p.nombre,
+                precioUsd: p.precio,
+            })),
+            totales: {
+                subtotalPlanUsd: subtotalPlan,
+                subtotalAdicionalesUsd: subtotalProductos,
+                totalEstimadoUsd: total,
+            },
+            creadoEn: serverTimestamp(),
+        };
+
+        try {
+            await setDoc(doc(db, 'cotizaciones', docId), payload);
+            return { ok: true, docId };
+        } catch (error) {
+            const mensaje =
+                error instanceof Error ? error.message : 'No se pudo guardar en la base de datos.';
+            console.error('Error al guardar cotización:', error);
+            return { ok: false, mensaje };
+        }
+    };
+
+    const enviarDatos = async () => {
+        setErrorFirebase(null);
+        setLinkWhatsappFallback(null);
+        if (whatsappTimeoutRef.current) {
+            clearTimeout(whatsappTimeoutRef.current);
+            whatsappTimeoutRef.current = null;
+        }
+
+        if (!nombre.trim()) {
             setMissingRequired(true);
+            setEmpresaRequerida(false);
+            setPlanError(false);
+            enfocarCampo(nombreRef.current);
             return;
         }
+        if (!email.trim()) {
+            setMissingRequired(true);
+            setEmpresaRequerida(false);
+            setPlanError(false);
+            enfocarCampo(emailRef.current);
+            return;
+        }
+        if (!empresa.trim()) {
+            setEmpresaRequerida(true);
+            setMissingRequired(false);
+            setPlanError(false);
+            enfocarCampo(empresaRef.current);
+            return;
+        }
+
         setMissingRequired(false);
+        setEmpresaRequerida(false);
 
         if (!planActual) {
             setPlanError(true);
+            enfocarCampo(planSelectRef.current);
             return;
         }
         setPlanError(false);
 
-        const productosTexto = productosSeleccionados.length > 0 
-            ? productosSeleccionados.map(id => {
-                const prod = productosData.find(p => p.id === id);
-                return `• ${prod?.nombre}: $${prod?.precio.toLocaleString()}`;
-            }).join('\n')
-            : '• Ninguno';
+        setEnviando(true);
+        const resultadoFirebase = await guardarEnFirebase(planActual);
+        setEnviando(false);
 
-        const texto = `═══════════════════════════════════════
-    COTIZACIÓN DE PLAN PERSONALIZADO
-═══════════════════════════════════════
-
-📋 DATOS DEL CLIENTE:
-Nombre: ${nombre || 'No especificado'}
-Email: ${email || 'No especificado'}
-Empresa: ${empresa || 'No especificado'}
-
-📦 PLAN SELECCIONADO:
-${planActual.name} - $${planActual.price.toLocaleString()}
-
-➕ PRODUCTOS ADICIONALES:
-${productosTexto}
-
-💰 TOTAL ESTIMADO: $${total.toLocaleString()}
-
-═══════════════════════════════════════
-Generado el: ${new Date().toLocaleString('es-ES')}
-`;
-
-        try {
-            await navigator.clipboard.writeText(texto);
-            mostrarMensaje('copiado');
-            setTimeout(() => mostrarMensaje('contacto'), 2000);
-        } catch {
-            const textarea = document.createElement('textarea');
-            textarea.value = texto;
-            textarea.style.cssText = 'position:fixed;opacity:0;';
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            mostrarMensaje('copiado');
-            setTimeout(() => mostrarMensaje('contacto'), 2000);
+        if (!resultadoFirebase.ok) {
+            setErrorFirebase(resultadoFirebase.mensaje);
+            return;
         }
+
+        const urlWhatsapp = construirUrlWhatsapp(planActual);
+        mostrarExito();
+
+        whatsappTimeoutRef.current = window.setTimeout(() => {
+            whatsappTimeoutRef.current = null;
+            const w = window.open(urlWhatsapp, '_blank', 'noopener,noreferrer');
+            if (!w) setLinkWhatsappFallback(urlWhatsapp);
+        }, 3000);
     };
 
     return (
@@ -130,6 +291,7 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                     <div className="form-group">
                         <label className="form-label">Nombre</label>
                         <input 
+                            ref={nombreRef}
                             type="text" 
                             className={`form-input ${missingRequired && nombre.trim().length === 0 ? 'error-shake' : ''}`}
                             placeholder="Tu nombre"
@@ -142,6 +304,7 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                     <div className="form-group">
                         <label className="form-label">Email</label>
                         <input 
+                            ref={emailRef}
                             type="email" 
                             className={`form-input ${missingRequired && email.trim().length === 0 ? 'error-shake' : ''}`}
                             placeholder="tu@email.com"
@@ -154,11 +317,16 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                     <div className="form-group">
                         <label className="form-label">Empresa</label>
                         <input 
+                            ref={empresaRef}
                             type="text" 
-                            className="form-input"
-                            placeholder="Nombre empresa (opcional)"
+                            className={`form-input ${empresaRequerida && empresa.trim().length === 0 ? 'error-shake' : ''}`}
+                            placeholder="Nombre de la empresa"
                             value={empresa}
-                            onChange={(e) => setEmpresa(e.target.value)}
+                            onChange={(e) => {
+                                setEmpresa(e.target.value);
+                                setEmpresaRequerida(false);
+                            }}
+                            required
                         />
                     </div>
                 </div>
@@ -166,12 +334,14 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                 <div className="form-group">
                     <label className="form-label">Selecciona tu plan</label>
                     <select 
+                        ref={planSelectRef}
                         className={`form-select ${planError ? 'error-shake' : ''}`}
                         value={planSeleccionado}
                         onFocus={() => setPlanError(false)}
                         onChange={(e) => {
                             setPlanSeleccionado(e.target.value);
                             setPlanError(false);
+                            
                         }}
                     >
                         <option value="">-- Elige un plan --</option>
@@ -228,29 +398,46 @@ Generado el: ${new Date().toLocaleString('es-ES')}
                 <button 
                     type="button" 
                     className="btn-cotizar"
-                    onClick={copiarAlPortapapeles}
+                    onClick={enviarDatos}
+                    disabled={enviando}
+                    aria-busy={enviando}
                 >
-                    <span>Copiar detalles del plan</span>
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+                    <span>{enviando ? 'Enviando…' : 'Enviar datos'}</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18" aria-hidden>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                               d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                     </svg>
                 </button>
+                {linkWhatsappFallback && (
+                    <p className="plan-whatsapp-fallback" role="status">
+                        El navegador bloqueó la ventana nueva.{' '}
+                        <a href={linkWhatsappFallback} target="_blank" rel="noopener noreferrer">
+                            Abrir WhatsApp en otra pestaña
+                        </a>
+                    </p>
+                )}
+                {errorFirebase && (
+                    <p className="plan-firebase-error" role="alert">
+                        No se pudo enviar a Firebase: {errorFirebase}. Revisa tu conexión y las reglas de Firestore (escritura en <code>cotizaciones</code>).
+                    </p>
+                )}
                 {missingRequired && (
                     <p className="mt-3 text-center text-sm text-[#FF6B76]">
-                        Nombre y email son obligatorios para continuar.
+                        Completa nombre y email (revisa el campo resaltado arriba).
+                    </p>
+                )}
+                {empresaRequerida && (
+                    <p className="mt-3 text-center text-sm text-[#FF6B76]">
+                        Indica el nombre de la empresa: así identificamos tu registro en la base de datos.
                     </p>
                 )}
             </div>
 
-            <div className={`message ${mensajeVisible === 'copiado' ? 'show' : ''}`}>
-                <div className="message-title">Portapapeles</div>
-                <div className="message-text">Los detalles de tu plan se han copiado al portapapeles</div>
-            </div>
-
-            <div className={`message ${mensajeVisible === 'contacto' ? 'show' : ''}`}>
-                <div className="message-title">¡Plan copiado!</div>
-                <div className="message-text">Contáctanos en la página de inicio con los detalles de tu plan</div>
+            <div className={`message ${mensajeVisible ? 'show' : ''}`}>
+                <div className="message-title">✅ Listo</div>
+                <div className="message-text">
+                    Tus datos quedaron guardados. En unos segundos se abrirá WhatsApp ({WHATSAPP_INTERNACIONAL}) en una pestaña nueva con tu mensaje. Si no se abre, permite ventanas emergentes o usa el enlace que aparece debajo del botón.
+                </div>
             </div>
         </div>
     );

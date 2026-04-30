@@ -10,7 +10,6 @@ interface Plan {
   objective: string;
   includes: string[];
   featured?: boolean;
-  cta: string;
 }
 
 const plans: Plan[] = [
@@ -26,7 +25,6 @@ const plans: Plan[] = [
       'Copys enfocados en ventas',
       'Calendario mensual + publicación estratégica',
     ],
-    cta: 'Elegir plan',
   },
   {
     id: 'crecimiento',
@@ -41,7 +39,6 @@ const plans: Plan[] = [
       'Historias + reporte mensual de resultados',
     ],
     featured: true,
-    cta: 'Agendar llamada',
   },
   {
     id: 'dominio',
@@ -55,7 +52,6 @@ const plans: Plan[] = [
       'Sesiones con modelo semanales',
       'Estrategia avanzada + gestión básica',
     ],
-    cta: 'Cotizar ahora',
   },
 ];
 
@@ -77,11 +73,6 @@ export default function PlansSection() {
       // ignore
     }
   }, [selectedPlan.id]);
-
-  const scrollToContact = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) contactSection.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <section className="section-flowing z-50 border-y border-white/10 bg-charcoal py-12 md:py-14">
@@ -151,13 +142,10 @@ export default function PlansSection() {
                 <div className="mt-5">
                   <button
                     type="button"
-                    onClick={() => {
-                      if (selectedPlan.featured) scrollToContact();
-                      else navigate('/plan-personalizado');
-                    }}
+                    onClick={() => navigate(`/plan-personalizado?plan=${selectedPlan.id}`)}
                     className="btn-primary w-full rounded-xl py-2.5 text-sm font-semibold"
                   >
-                    {selectedPlan.cta}
+                    Elegir plan
                   </button>
                 </div>
               </div>
