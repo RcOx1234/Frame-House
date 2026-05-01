@@ -5,151 +5,14 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Toaster, toast } from 'sonner';
 import { shouldUseLightAnimations } from '../lib/motion';
+import { getProjects, type Project } from '../lib/projects';
 
 type ProjectType = 'video' | 'web' | 'social' | 'branding' | 'fotografia' | 'otros';
 type FilterType = 'Todos' | 'Videos' | 'Webs' | 'Contenido Social' | 'Branding / Diseño' | 'Fotografía' | 'Otros';
 
-type Project = {
-  id: string;
-  title: string;
-  client: string;
-  type: ProjectType;
-  category: FilterType;
-  thumbnail: string;
-  previewVideo?: string;
-  duration?: string;
-  platform: string;
-  description: string;
-  tags: string[];
-  format: string;
-  siteUrl?: string;
-  featured?: boolean;
-};
-
 const WHATSAPP_NUMBER = '593991433792';
 const FILTERS: FilterType[] = ['Todos', 'Videos', 'Webs', 'Contenido Social', 'Branding / Diseño', 'Fotografía', 'Otros'];
 gsap.registerPlugin(ScrollTrigger);
-
-const PROJECTS: Project[] = [
-  {
-    id: 'FH-VID-023',
-    title: 'Campaña Ojos Asi',
-    client: 'Shakira Team',
-    type: 'video',
-    category: 'Videos',
-    thumbnail: 'https://billboard.com.co/wp-content/uploads/2025/07/ojos-asi-770x470.png',
-    previewVideo: 'https://res.cloudinary.com/dolxglacq/video/upload/q_auto/f_auto/v1776644599/Ojos-asi_avh7b2.mp4',
-    duration: '00:30',
-    platform: 'Instagram / Reels',
-    description: 'Pieza short-form para awareness y retencion, optimizada para hook en 3 segundos.',
-    tags: ['performance', 'shortform', 'ads'],
-    format: 'Reel Ad',
-    featured: true
-  },
-  {
-    id: 'FH-VID-024',
-    title: 'Bolones Picapiedra Prom',
-    client: 'Bolones Picapiedra',
-    type: 'video',
-    category: 'Videos',
-    thumbnail: 'https://ik.imagekit.io/ObamaRS12/Frame%20House/Portafolio/Galeria/ese.jpg',
-    previewVideo: 'https://res.cloudinary.com/dolxglacq/video/upload/q_auto/f_auto/v1776649769/Video_Prom_2_cdxhzd.mp4',
-    duration: '00:22',
-    platform: 'TikTok / Instagram',
-    description: 'Video promocional enfocado en conversion local con narrativa rapida y CTA visible.',
-    tags: ['food', 'local', 'conversion'],
-    format: 'Reel Promo'
-  },
-  {
-    id: 'FH-WEB-011',
-    title: 'Landing Performance B2B',
-    client: 'Constructora Nova',
-    type: 'web',
-    category: 'Webs',
-    thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&auto=format&fit=crop',
-    platform: 'Web',
-    description: 'Landing page para captacion de leads con estructura de conversion y formulario optimizado.',
-    tags: ['landing', 'ux', 'conversion'],
-    format: 'Landing Page',
-    siteUrl: 'https://instagram.com',
-    featured: true
-  },
-  {
-    id: 'FH-SOC-030',
-    title: 'Contenido Mensual Fitness',
-    client: 'Nova Gym',
-    type: 'social',
-    category: 'Contenido Social',
-    thumbnail: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1600&auto=format&fit=crop',
-    platform: 'Instagram',
-    description: 'Sistema mensual de piezas para retencion y captacion con consistencia visual de marca.',
-    tags: ['social', 'growth', 'content'],
-    format: 'Content Pack'
-  },
-  {
-    id: 'FH-DES-004',
-    title: 'Rebranding Cafeteria Artesanal',
-    client: 'Origen Coffee',
-    type: 'branding',
-    category: 'Branding / Diseño',
-    thumbnail: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&auto=format&fit=crop',
-    platform: 'Brand Assets',
-    description: 'Rediseño de identidad visual, paleta, tipografia y sistema de piezas aplicadas.',
-    tags: ['branding', 'identity', 'design'],
-    format: 'Branding Kit'
-  },
-  {
-    id: 'FH-FOT-017',
-    title: 'Album Editorial Moda',
-    client: 'Atelier 92',
-    type: 'fotografia',
-    category: 'Fotografía',
-    thumbnail: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&auto=format&fit=crop',
-    platform: 'Editorial',
-    description: 'Sesion fotografica enfocada en textura de prendas, colorimetria y direccion de arte.',
-    tags: ['photo', 'editorial', 'fashion'],
-    format: 'Photo Album'
-  },
-  {
-    id: 'FH-OTH-010',
-    title: 'Cobertura Evento Corporativo',
-    client: 'Summit Pro',
-    type: 'otros',
-    category: 'Otros',
-    thumbnail: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=1600&auto=format&fit=crop',
-    platform: 'Multiplataforma',
-    description: 'Cobertura integral: clips, fotografias y resumen ejecutivo para comunicacion interna.',
-    tags: ['event', 'coverage', 'corporate'],
-    format: 'Event Pack'
-  },
-  {
-    id: 'FH-WEB-012',
-    title: 'Sitio Portfolio Arquitectura',
-    client: 'Linea Vertical',
-    type: 'web',
-    category: 'Webs',
-    thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&auto=format&fit=crop',
-    platform: 'Web',
-    description: 'Sitio de alto impacto visual para mostrar proyectos y facilitar contacto comercial.',
-    tags: ['portfolio', 'web', 'uxui'],
-    format: 'Website',
-    siteUrl: 'https://instagram.com'
-  },
-  {
-    id: 'FH-WEB-013',
-    title: 'Cafeteria Verde & Cafe',
-    client: 'Cafeteria Verde & Cafe',
-    type: 'web',
-    category: 'Webs',
-    thumbnail: 'https://ik.imagekit.io/ObamaRS12/Frame%20House/Portafolio/Galeria/logo_verde-y-cafe3.jpg?updatedAt=1777500506231',
-    platform: 'Web',
-    description:
-      'Sitio web con enfoque en marca local, menu destacado y experiencia visual calida para convertir visitas en pedidos.',
-    tags: ['react', 'web', 'branding', 'local-business', 'ux'],
-    format: 'Website',
-    siteUrl: 'https://verde-cafe-manta.vercel.app/'
-  }
-];
 
 function typeIcon(type: ProjectType) {
   if (type === 'video' || type === 'social') return <Play className="w-4 h-4" />;
@@ -159,6 +22,9 @@ function typeIcon(type: ProjectType) {
 
 export default function TrabajosPage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('Todos');
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [visibleCount, setVisibleCount] = useState(6);
   const [copiedRef, setCopiedRef] = useState<string | null>(null);
@@ -174,13 +40,29 @@ export default function TrabajosPage() {
   const previousVisibleCountRef = useRef(6);
 
   const filteredProjects = useMemo(() => {
-    const ranked = [...PROJECTS].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
+    const ranked = [...projects].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
     if (activeFilter === 'Todos') return ranked;
     return ranked.filter((project) => project.category === activeFilter);
-  }, [activeFilter]);
+  }, [activeFilter, projects]);
 
   const visibleProjects = filteredProjects.slice(0, visibleCount);
   const canLoadMore = visibleCount < filteredProjects.length;
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+      } catch (loadError) {
+        console.error(loadError);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -425,6 +307,9 @@ export default function TrabajosPage() {
             );
           })}
         </section>
+
+        {loading ? <p className="mt-8 text-sm text-off-white/70">Cargando proyectos...</p> : null}
+        {error ? <p className="mt-8 text-sm text-[#D61E2B]">No se pudieron cargar los proyectos</p> : null}
 
         <section ref={gridRef} className="mt-8 grid grid-cols-1 gap-5 md:mt-10 md:grid-cols-2 xl:grid-cols-4">
           {visibleProjects.map((project) => (
