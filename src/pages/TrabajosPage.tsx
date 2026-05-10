@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Toaster, toast } from 'sonner';
 import { shouldUseLightAnimations } from '../lib/motion';
 import { getProjects, type Project } from '../lib/projects';
+import { ProjectMediaCarousel } from '../components/ProjectMediaCarousel';
 
 type ProjectType = 'video' | 'web' | 'social' | 'branding' | 'fotografia' | 'otros';
 type FilterType = 'Todos' | 'Videos' | 'Webs' | 'Contenido Social' | 'Branding / Diseño' | 'Fotografía' | 'Otros';
@@ -422,18 +423,7 @@ export default function TrabajosPage() {
             </button>
 
             <div className="relative min-h-[240px] bg-black md:min-h-[320px] lg:min-h-0">
-              {selectedProject.previewVideo ? (
-                <video
-                  src={selectedProject.previewVideo}
-                  controls
-                  autoPlay
-                  muted
-                  playsInline
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <img src={selectedProject.thumbnail} alt={selectedProject.title} className="h-full w-full object-cover" />
-              )}
+              <ProjectMediaCarousel project={selectedProject} />
             </div>
 
             <div className="flex flex-col overflow-y-auto p-6 md:p-8">

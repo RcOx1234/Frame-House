@@ -4,6 +4,13 @@ import { db } from '../firebase';
 type ProjectType = 'video' | 'web' | 'social' | 'branding' | 'fotografia' | 'otros';
 type FilterType = 'Todos' | 'Videos' | 'Webs' | 'Contenido Social' | 'Branding / Diseño' | 'Fotografía' | 'Otros';
 
+export type ProjectMediaItem = {
+  id: string;
+  kind: 'image' | 'video';
+  url: string;
+  label?: string;
+};
+
 export type Project = {
   id: string;
   title: string;
@@ -11,7 +18,9 @@ export type Project = {
   type: ProjectType;
   category: FilterType;
   thumbnail: string;
+  previewImage?: string;
   previewVideo?: string;
+  mediaItems?: ProjectMediaItem[];
   duration?: string;
   platform: string;
   description: string;
@@ -33,7 +42,9 @@ export async function getProjects(): Promise<Project[]> {
       type: data.type ?? 'otros',
       category: data.category ?? 'Otros',
       thumbnail: data.thumbnail ?? '',
+      previewImage: data.previewImage,
       previewVideo: data.previewVideo,
+      mediaItems: Array.isArray(data.mediaItems) ? (data.mediaItems as ProjectMediaItem[]) : undefined,
       duration: data.duration,
       platform: data.platform ?? '',
       description: data.description ?? '',
