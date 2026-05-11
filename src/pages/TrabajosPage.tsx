@@ -39,6 +39,7 @@ export default function TrabajosPage() {
   const modalPanelRef = useRef<HTMLDivElement>(null);
   const hasMountedRef = useRef(false);
   const previousVisibleCountRef = useRef(6);
+  const hasAnimatedInitialLoadRef = useRef(false);
 
   const filteredProjects = useMemo(() => {
     const ranked = [...projects].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
@@ -177,6 +178,32 @@ export default function TrabajosPage() {
   }, []);
 
   useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    if (loading || error) return;
+    if (hasAnimatedInitialLoadRef.current) return;
+    if (visibleProjects.length === 0) return;
+
+    const cards = Array.from(grid.querySelectorAll('button'));
+    if (!cards.length) return;
+
+    hasAnimatedInitialLoadRef.current = true;
+    const lightAnimations = shouldUseLightAnimations();
+    gsap.fromTo(
+      cards,
+      { opacity: 0, y: 14 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: lightAnimations ? 0.26 : 0.42,
+        stagger: lightAnimations ? 0.03 : 0.05,
+        ease: 'power2.out',
+        clearProps: 'opacity,transform'
+      }
+    );
+  }, [error, loading, visibleProjects.length]);
+
+  useEffect(() => {
     if (!selectedProject || !modalOverlayRef.current || !modalPanelRef.current) return;
 
     const overlay = modalOverlayRef.current;
@@ -263,7 +290,7 @@ export default function TrabajosPage() {
 
       <main className="px-6 py-12 md:px-[7vw] md:py-16">
         <header ref={headerRef} className="max-w-4xl">
-          <p className="font-mono text-xs tracking-[0.35em] text-[#D61E2B] md:text-sm">PORTFOLIO</p>
+          <p className="font-mono text-xs tracking-[0.35em] text-[#D61E2B] md:text-sm">PORTAFOLIO</p>
           <h1 className="mt-4 font-heading text-3xl font-bold leading-tight text-off-white md:text-5xl">
             TRABAJOS QUE GENERAN RESULTADOS.
           </h1>
@@ -430,21 +457,21 @@ export default function TrabajosPage() {
               <h3 className="font-heading text-2xl font-bold text-off-white md:text-3xl">{selectedProject.title}</h3>
               <div className="mt-4 space-y-2 text-sm text-off-white/75">
                 <p>
-                  <span className="text-off-white">Cliente:</span> {selectedProject.client}
+                  <span className="font-semibold text-off-white">Cliente:</span> {selectedProject.client}
                 </p>
                 <p>
-                  <span className="text-off-white">Tipo:</span> {selectedProject.type}
+                  <span className="font-semibold text-off-white">Tipo:</span> {selectedProject.type}
                 </p>
                 <p>
-                  <span className="text-off-white">Formato:</span> {selectedProject.format}
+                  <span className="font-semibold text-off-white">Formato:</span> {selectedProject.format}
                 </p>
                 {selectedProject.duration ? (
                   <p>
-                    <span className="text-off-white">Duracion:</span> {selectedProject.duration}
+                    <span className="font-semibold text-off-white">Duracion:</span> {selectedProject.duration}
                   </p>
                 ) : null}
                 <p>
-                  <span className="text-off-white">Plataforma:</span> {selectedProject.platform}
+                  <span className="font-semibold text-off-white">Plataforma:</span> {selectedProject.platform}
                 </p>
               </div>
 

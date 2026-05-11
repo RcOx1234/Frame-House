@@ -1,5 +1,11 @@
 import type { Project, ProjectMediaItem } from './projects';
 
+/**
+ * Media shown inside the project modal carousel.
+ * - If `mediaItems` exists and has entries, only those are used (strict shape).
+ * - Otherwise fallback uses preview assets; if none exist, uses thumbnail as last resort.
+ *   Thumbnail should not be an extra slide when a real carousel exists.
+ */
 export function getProjectMediaItems(project: Project): ProjectMediaItem[] {
   if (Array.isArray(project.mediaItems) && project.mediaItems.length > 0) {
     return project.mediaItems
@@ -14,18 +20,32 @@ export function getProjectMediaItems(project: Project): ProjectMediaItem[] {
 
   const fallback: ProjectMediaItem[] = [];
 
-  if (project.thumbnail) {
-    fallback.push({ id: `${project.id}-thumb`, kind: 'image', url: project.thumbnail, label: 'Thumbnail' });
-  }
-
   if (project.previewImage) {
-    fallback.push({ id: `${project.id}-preview-image`, kind: 'image', url: project.previewImage, label: 'Preview' });
+    fallback.push({
+      id: `${project.id}-preview-image`,
+      kind: 'image',
+      url: project.previewImage,
+      label: 'Preview'
+    });
   }
 
   if (project.previewVideo) {
-    fallback.push({ id: `${project.id}-preview-video`, kind: 'video', url: project.previewVideo, label: 'Video' });
+    fallback.push({
+      id: `${project.id}-preview-video`,
+      kind: 'video',
+      url: project.previewVideo,
+      label: 'Video'
+    });
+  }
+
+  if (fallback.length === 0 && project.thumbnail) {
+    fallback.push({
+      id: `${project.id}-thumb`,
+      kind: 'image',
+      url: project.thumbnail,
+      label: 'Thumbnail'
+    });
   }
 
   return fallback;
 }
-
