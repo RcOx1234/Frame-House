@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -65,6 +65,57 @@ export default function PlansSection() {
     }
   });
   const navigate = useNavigate();
+  const articleRef = useRef<HTMLElement>(null);
+  const heightBeforeChangeRef = useRef<number | null>(null);
+  const skipHeightAnimationRef = useRef(true);
+
+  const handleSelectPlan = (plan: Plan) => {
+    if (plan.id === selectedPlan.id) return;
+    const el = articleRef.current;
+    if (el) {
+      heightBeforeChangeRef.current = el.getBoundingClientRect().height;
+    }
+    setSelectedPlan(plan);
+  };
+
+  useLayoutEffect(() => {
+    const el = articleRef.current;
+    if (!el) return;
+
+    if (skipHeightAnimationRef.current) {
+      skipHeightAnimationRef.current = false;
+      return;
+    }
+
+    const from = heightBeforeChangeRef.current;
+    if (from === null) return;
+    heightBeforeChangeRef.current = null;
+
+    const to = el.scrollHeight;
+    if (Math.abs(from - to) < 2) return;
+
+    el.style.height = `${from}px`;
+    el.style.overflow = 'hidden';
+
+    requestAnimationFrame(() => {
+      el.style.transition = 'height 320ms cubic-bezier(0.4, 0, 0.2, 1)';
+      el.style.height = `${to}px`;
+    });
+
+    const onTransitionEnd = (e: TransitionEvent) => {
+      if (e.target !== el || e.propertyName !== 'height') return;
+      el.style.height = '';
+      el.style.overflow = '';
+      el.style.transition = '';
+      el.removeEventListener('transitionend', onTransitionEnd);
+    };
+
+    el.addEventListener('transitionend', onTransitionEnd);
+
+    return () => {
+      el.removeEventListener('transitionend', onTransitionEnd);
+    };
+  }, [selectedPlan.id]);
 
   useEffect(() => {
     try {
@@ -99,7 +150,8 @@ export default function PlansSection() {
             </div>
 
             <article
-              className={`order-2 overflow-hidden rounded-[22px] border transition-all duration-300 ${
+              ref={articleRef}
+              className={`order-2 overflow-hidden rounded-[22px] border transition-[border-color,box-shadow,background] duration-300 ${
                 selectedPlan.featured
                   ? 'border-[#D12C3B]/42 bg-[linear-gradient(145deg,rgba(209,44,59,0.12)_0%,rgba(10,10,10,0.98)_62%)]'
                   : 'border-white/14 bg-[linear-gradient(145deg,rgba(255,255,255,0.05)_0%,rgba(10,10,10,0.98)_65%)]'
@@ -121,7 +173,10 @@ export default function PlansSection() {
                 )}
               </div>
 
-              <div className="p-4 sm:p-5 md:p-6">
+              <div
+                key={selectedPlan.id}
+                className="animate-in fade-in-0 p-4 duration-200 sm:p-5 md:p-6"
+              >
                 <h3 className="font-heading text-lg font-bold tracking-wide text-off-white md:text-xl">
                   {selectedPlan.name}
                 </h3>
@@ -159,7 +214,7 @@ export default function PlansSection() {
                     <button
                       key={plan.id}
                       type="button"
-                      onClick={() => setSelectedPlan(plan)}
+                      onClick={() => handleSelectPlan(plan)}
                       className={`w-full rounded-xl border p-3.5 text-left transition-all duration-300 md:p-4 ${
                         active ? 'border-white/30 bg-white/12' : 'border-white/10 bg-black/45 hover:border-white/20'
                       }`}
