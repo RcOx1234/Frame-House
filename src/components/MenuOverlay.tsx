@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import type { LucideIcon } from 'lucide-react';
 import { Briefcase, Film, Images, Layers, ListOrdered, Phone, X } from 'lucide-react';
+import { FRAMEHOUSE_EMAIL } from '../config/contact';
 
 interface MenuOverlayProps {
   isOpen: boolean;
@@ -11,9 +13,9 @@ interface MenuOverlayProps {
 const menuItems: { label: string; href: string; Icon: LucideIcon }[] = [
   { label: 'Servicios', href: '#services', Icon: Briefcase },
   { label: 'Portafolio', href: '#portfolio-spotlight', Icon: Images },
+  { label: 'Galería', href: '#gallery', Icon: Film },
   { label: 'Proceso', href: '#process', Icon: ListOrdered },
   { label: 'Planes', href: '#plans', Icon: Layers },
-  { label: 'Trabajos', href: '#portfolio', Icon: Film },
   { label: 'Contacto', href: '#contact', Icon: Phone },
 ];
 
@@ -21,6 +23,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -80,9 +83,15 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     onClose();
 
     setTimeout(() => {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      if (href.startsWith('/')) {
+        navigate(href);
+        return;
+      }
+      if (href.startsWith('#')) {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     }, 400);
   };
@@ -127,10 +136,10 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 
       <div className="mt-10 max-md:absolute max-md:bottom-8 md:mt-12">
         <a
-          href="mailto:hello@framehouse.studio"
+          href={`mailto:${FRAMEHOUSE_EMAIL}`}
           className="label-mono text-xs text-muted-warm transition-colors hover:text-[#FF4D5C] md:text-sm"
         >
-          hello@framehouse.studio
+          {FRAMEHOUSE_EMAIL}
         </a>
       </div>
     </div>

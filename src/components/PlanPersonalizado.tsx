@@ -4,6 +4,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import '../styles/PlanPersonalizado.css';
 import type { Producto, PlanOption } from '../types/planTypes';
+import {
+    buildWhatsAppUrl,
+    FRAMEHOUSE_WHATSAPP_DISPLAY,
+    FRAMEHOUSE_WHATSAPP_INTERNATIONAL,
+} from '../config/contact';
 
 const productosData: Producto[] = [
     { id: 'prod1', nombre: 'Producto adicional 1', precio: 150 },
@@ -19,10 +24,6 @@ const planesData: PlanOption[] = [
     { value: 'crecimiento', price: 480, name: 'Plan Crecimiento Activo', label: 'Plan Crecimiento Activo - USD 460–500 / mes' },
     { value: 'dominio', price: 715, name: 'Plan Dominio Digital', label: 'Plan Dominio Digital - USD 690–740 / mes' },
 ];
-
-const WHATSAPP_E164 = '593991433792';
-const WHATSAPP_DISPLAY = '099 143 3792';
-const WHATSAPP_INTERNACIONAL = '+593 99 143 3792';
 
 function hashFnv1aHex(input: string): string {
     let hash = 0x811c9dc5;
@@ -143,20 +144,11 @@ ${productosTexto}
 
 🕐 ${new Date().toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' })}
 
-_Contacto: ${WHATSAPP_DISPLAY} (${WHATSAPP_INTERNACIONAL})_`;
+_Contacto: ${FRAMEHOUSE_WHATSAPP_DISPLAY} (${FRAMEHOUSE_WHATSAPP_INTERNATIONAL})_`;
     };
 
-    const construirUrlWhatsapp = (plan: PlanOption): string => {
-        const base = `https://wa.me/${WHATSAPP_E164}?text=`;
-        let msg = construirMensajeWhatsapp(plan);
-        const maxUrlLen = 7500;
-        let url = base + encodeURIComponent(msg);
-        while (url.length > maxUrlLen && msg.length > 120) {
-            msg = `${msg.slice(0, Math.floor(msg.length * 0.82))}…`;
-            url = base + encodeURIComponent(msg);
-        }
-        return url;
-    };
+    const construirUrlWhatsapp = (plan: PlanOption): string =>
+        buildWhatsAppUrl(construirMensajeWhatsapp(plan));
 
     type GuardarResultado =
         | { ok: true; docId: string }

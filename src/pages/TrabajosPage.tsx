@@ -11,7 +11,7 @@ import { ProjectMediaCarousel } from '../components/ProjectMediaCarousel';
 type ProjectType = 'video' | 'web' | 'social' | 'branding' | 'fotografia' | 'otros';
 type FilterType = 'Todos' | 'Videos' | 'Webs' | 'Contenido Social' | 'Branding / Diseño' | 'Fotografía' | 'Otros';
 
-const WHATSAPP_NUMBER = '593991433792';
+import { buildWhatsAppUrl } from '../config/contact';
 const FILTERS: FilterType[] = ['Todos', 'Videos', 'Webs', 'Contenido Social', 'Branding / Diseño', 'Fotografía', 'Otros'];
 gsap.registerPlugin(ScrollTrigger);
 
@@ -418,7 +418,7 @@ export default function TrabajosPage() {
               Cotizar
             </Link>
             <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola,%20quiero%20cotizar%20un%20proyecto%20con%20Frame%20House`}
+              href={buildWhatsAppUrl('Hola, quiero cotizar un proyecto con Frame House')}
               target="_blank"
               rel="noreferrer"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-off-white transition hover:border-[#D61E2B]/60 hover:text-[#D61E2B]"
@@ -501,9 +501,9 @@ export default function TrabajosPage() {
                   </a>
                 ) : (
                   <a
-                    href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                      `Hola, quiero informacion sobre el proyecto ${selectedProject.id}`
-                    )}`}
+                    href={buildWhatsAppUrl(
+                      `Hola, quiero informacion sobre el proyecto ${selectedProject.id}`,
+                    )}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 rounded-full border border-[#D61E2B] bg-[#D61E2B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"

@@ -8,6 +8,7 @@ import { ChevronUp } from 'lucide-react';
 import HeroSection from './sections/HeroSection';
 import ServicesSection from './sections/ServicesSection';
 import PortfolioShowcaseSection from './sections/PortfolioShowcaseSection';
+import GalleryCTASection from './sections/GalleryCTASection';
 import ProcessSection from './sections/ProcessSection';
 import MetricsSection from './sections/MetricsSection';
 import PlansSection from './sections/PlansSection';
@@ -98,6 +99,7 @@ function HomePage() {
           <ServicesSection />
         </div>
         <PortfolioShowcaseSection />
+        <GalleryCTASection />
         <div id="process">
           <ProcessSection />
         </div>

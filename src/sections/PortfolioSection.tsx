@@ -104,10 +104,13 @@ export default function PortfolioSection() {
           {/* Heading */}
           <h2 
             ref={headingRef}
-            className="headline-lg text-off-white mb-8 md:mb-12 text-2xl md:text-inherit"
+            className="headline-lg text-off-white mb-3 md:mb-4 text-2xl md:text-inherit"
           >
             Trabajos seleccionados.
           </h2>
+          <p className="mb-8 max-w-xl text-sm text-muted-warm md:mb-12 md:text-base">
+            Una muestra rápida de piezas creadas para redes, campañas y marcas locales.
+          </p>
 
           {/* Portfolio Cards - Mobile: Stack, Desktop: Row */}
           <div className="flex flex-col md:flex-row gap-6 md:gap-8">
@@ -172,7 +175,7 @@ export default function PortfolioSection() {
               to="/trabajos"
               className="inline-flex items-center gap-2 text-burnt-orange hover:text-off-white transition-colors font-medium group text-sm md:text-base"
             >
-              Ver Galeria
+              Ver galería completa
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>

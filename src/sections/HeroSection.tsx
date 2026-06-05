@@ -234,13 +234,22 @@ export default function HeroSection({ onMenuOpen }: HeroSectionProps) {
                   Producción, edición y estrategia de contenido para marcas que quieren crecer.
                 </p>
 
-                <button
-                  type="button"
-                  onClick={scrollToContact}
-                  className="mx-auto w-full max-w-[320px] rounded-[18px] bg-[var(--fh-accent-red)] px-6 py-3 text-sm font-medium text-white shadow-[0_18px_44px_rgba(214,30,43,0.22)] transition-all duration-300 hover:bg-[var(--fh-accent-red-dark)]"
-                >
-                  Contáctanos
-                </button>
+                <div className="mx-auto flex w-full max-w-[360px] flex-col gap-3 sm:flex-row sm:justify-center">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/plan-personalizado')}
+                    className="w-full rounded-[18px] bg-[var(--fh-accent-red)] px-6 py-3 text-sm font-medium text-white shadow-[0_18px_44px_rgba(214,30,43,0.22)] transition-all duration-300 hover:bg-[var(--fh-accent-red-dark)] sm:flex-1"
+                  >
+                    Solicitar cotización
+                  </button>
+                  <button
+                    type="button"
+                    onClick={scrollToPortfolio}
+                    className="w-full rounded-[18px] border border-[var(--fh-text-cream)]/35 bg-transparent px-6 py-3 text-sm font-medium text-[var(--fh-text-cream)] transition-all duration-300 hover:bg-white/5 sm:flex-1"
+                  >
+                    Ver portafolio
+                  </button>
+                </div>
               </div>
 
               {/* Right */}

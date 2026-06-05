@@ -5,155 +5,109 @@ import { shouldUseLightAnimations } from '../lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const metrics = [
+const growthCards = [
   {
-    value: '+120%',
-    label: 'Lift promedio en view-through vs baseline',
-    chartPath: 'M0,40 Q20,35 40,25 T80,20 T120,15 T160,10'
+    value: '01',
+    title: 'Diagnóstico comercial',
+    description:
+      'Antes de crear, entendemos tu negocio, tu público y qué debe comunicar tu marca para diferenciarse.',
   },
   {
-    value: '3×',
-    label: 'Más hooks testeados por campaña',
-    chartPath: 'M0,50 Q25,45 50,30 T100,25 T150,15 T200,5'
+    value: '02',
+    title: 'Producción con intención',
+    description:
+      'Cada video, afiche o historia se diseña para cumplir un objetivo: informar, atraer, generar confianza o impulsar consultas.',
   },
   {
-    value: '48h',
-    label: 'Turnaround típico para un batch de contenido',
-    chartPath: 'M0,45 Q30,40 60,35 T120,25 T180,20 T240,10'
-  }
+    value: '03',
+    title: 'Optimización mensual',
+    description:
+      'Revisamos el desempeño del contenido y ajustamos ideas, formatos y mensajes para mejorar el siguiente mes.',
+  },
 ];
 
 export default function MetricsSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const chartsRef = useRef<(SVGPathElement | null)[]>([]);
 
   useEffect(() => {
     const section = sectionRef.current;
-    const heading = headingRef.current;
+    const header = headerRef.current;
     const cards = cardsRef.current.filter(Boolean);
-    const charts = chartsRef.current.filter(Boolean);
 
-    if (!section || !heading || cards.length === 0) return;
+    if (!section || !header || cards.length === 0) return;
     const lightAnimations = shouldUseLightAnimations();
 
     const ctx = gsap.context(() => {
-      // Heading animation
-      gsap.fromTo(heading,
-        { y: 30, opacity: 0 },
+      gsap.fromTo(
+        header,
+        { y: 28, opacity: 0 },
         {
           y: 0,
           opacity: 1,
           duration: lightAnimations ? 0.5 : 0.8,
           ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 80%',
-            end: lightAnimations ? undefined : 'top 60%',
-            scrub: lightAnimations ? false : 1,
-            once: lightAnimations
-          }
-        }
+          scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+        },
       );
 
-      // Cards animation with stagger
-      cards.forEach((card, index) => {
-        gsap.fromTo(card,
-          { y: 50, opacity: 0, scale: 0.98 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: lightAnimations ? 0.55 : 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: section,
-              start: `top ${70 - index * 8}%`,
-              end: lightAnimations ? undefined : `top ${45 - index * 8}%`,
-              scrub: lightAnimations ? false : 1,
-              once: lightAnimations
-            }
-          }
-        );
-      });
-
-      // Chart line draw animation
-      charts.forEach((chart) => {
-        if (!chart) return;
-        const length = chart.getTotalLength ? chart.getTotalLength() : 200;
-        gsap.set(chart, { strokeDasharray: length, strokeDashoffset: length });
-        
-        gsap.to(chart, {
-          strokeDashoffset: 0,
-          duration: lightAnimations ? 0.9 : 1.5,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: chart,
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-          }
-        });
-      });
+      gsap.fromTo(
+        cards,
+        { y: 36, opacity: 0, scale: 0.98 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: lightAnimations ? 0.45 : 0.7,
+          stagger: lightAnimations ? 0.07 : 0.1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: section, start: 'top 75%', once: true },
+        },
+      );
     }, section);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section 
-      ref={sectionRef} 
-      className="section-flowing bg-charcoal z-40 py-16 md:py-[12vh]"
+    <section
+      ref={sectionRef}
+      className="section-flowing z-40 bg-gradient-to-b from-[#0B0D10] via-[#141210] to-[#0B0D10] py-16 md:py-[12vh]"
     >
       <div className="px-6 md:px-[7vw]">
-        {/* Heading */}
-        <h2 
-          ref={headingRef}
-          className="headline-lg text-off-white mb-10 md:mb-16 text-2xl md:text-inherit"
-        >
-          Construido para performance.
-        </h2>
+        <div ref={headerRef} className="mb-10 md:mb-16">
+          <p className="label-mono mb-4 text-muted-warm">SISTEMA DE CRECIMIENTO</p>
+          <h2 className="headline-lg mb-4 text-2xl text-off-white md:text-inherit">
+            Contenido que se crea, se publica y se mejora.
+          </h2>
+          <p className="max-w-2xl text-sm text-muted-warm md:text-base">
+            Trabajamos cada plan con una lógica clara: entender la marca, producir con intención y revisar
+            qué puede optimizarse en el siguiente ciclo.
+          </p>
+        </div>
 
-        {/* Metric Cards - Mobile: Stack, Desktop: Row */}
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-          {metrics.map((metric, index) => (
+        <div className="flex flex-col gap-6 md:flex-row md:gap-8">
+          {growthCards.map((card, index) => (
             <div
-              key={metric.value}
-              ref={el => { cardsRef.current[index] = el; }}
-              className={`metric-card flex-1 ${index === 1 ? 'md:mt-[4vh]' : ''}`}
+              key={card.value}
+              ref={(el) => {
+                cardsRef.current[index] = el;
+              }}
+              className={`metric-card flex-1 border border-white/10 bg-white/[0.03] ${index === 1 ? 'md:mt-[2vh]' : ''}`}
             >
-              <div className="text-4xl md:text-6xl font-heading font-bold text-burnt-orange mb-3 md:mb-4">
-                {metric.value}
+              <div className="mb-3 font-mono text-4xl font-bold text-[#D12C3B] md:mb-4 md:text-5xl">
+                {card.value}
               </div>
-              
-              <p className="text-muted-warm mb-6 md:mb-8 text-sm md:text-base">
-                {metric.label}
-              </p>
-              
-              {/* Chart */}
-              <svg 
-                viewBox="0 0 240 60" 
-                className="w-full h-12 md:h-16"
-                preserveAspectRatio="none"
-              >
-                <path
-                  ref={el => { chartsRef.current[index] = el; }}
-                  d={metric.chartPath}
-                  fill="none"
-                  stroke="#D12C3B"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="chart-line"
-                />
-              </svg>
+              <h3 className="font-heading mb-3 text-lg font-bold text-off-white md:text-xl">{card.title}</h3>
+              <p className="text-sm leading-relaxed text-muted-warm md:text-base">{card.description}</p>
             </div>
           ))}
         </div>
 
-        {/* Note */}
-        <p className="mt-8 md:mt-12 text-muted-warm/60 text-xs md:text-sm">
-          Métricas basadas en promedios de clientes de 90 días.
+        <p className="mt-8 hidden text-sm text-muted-warm/70 md:mt-12 md:block">
+          Tres fases, un mismo objetivo: que tu marca crezca con contenido que tiene dirección, no solo
+          volumen.
         </p>
       </div>
     </section>
