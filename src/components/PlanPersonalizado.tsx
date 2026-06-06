@@ -1,8 +1,10 @@
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { gsap } from 'gsap';
 import '../styles/PlanPersonalizado.css';
+import { shouldUseLightAnimations } from '../lib/motion';
 import type { Producto, PlanOption } from '../types/planTypes';
 import {
     buildWhatsAppUrl,
@@ -11,19 +13,34 @@ import {
 } from '../config/contact';
 
 const productosData: Producto[] = [
-    { id: 'prod1', nombre: 'Producto adicional 1', precio: 150 },
-    { id: 'prod2', nombre: 'Producto adicional 2', precio: 300 },
-    { id: 'prod3', nombre: 'Producto adicional 3', precio: 450 },
-    { id: 'prod4', nombre: 'Producto adicional 4', precio: 200 },
-    { id: 'prod5', nombre: 'Producto adicional 5', precio: 350 },
-    { id: 'prod6', nombre: 'Producto adicional 6', precio: 500 },
+    { id: 'prod1', nombre: 'Pack de Reels Extra', precio: 150 },
+    { id: 'prod2', nombre: 'Sesión Audiovisual Express', precio: 300 },
+    { id: 'prod3', nombre: 'Video Premium de Campaña', precio: 450 },
+    { id: 'prod4', nombre: 'Pack de Afiches Promocionales', precio: 200 },
+    { id: 'prod5', nombre: 'Landing Page para Marca', precio: 350 },
+    { id: 'prod6', nombre: 'Branding Base / Identidad Visual', precio: 500 },
 ];
+
+const productosDescripcion: Record<string, string> = {
+    prod1: 'Videos verticales extra para campañas, promociones o lanzamientos.',
+    prod2: 'Grabación ligera para generar material visual de marca.',
+    prod3: 'Pieza audiovisual más cuidada para campañas de mayor impacto.',
+    prod4: 'Diseños para promociones, historias, posts y anuncios visuales.',
+    prod5: 'Página simple para presentar tu marca, servicio o campaña.',
+    prod6: 'Base visual para que tu marca se vea más coherente y profesional.',
+};
 
 const planesData: PlanOption[] = [
     { value: 'impulso', price: 290, name: 'Plan Impulso Digital', label: 'Plan Impulso Digital - USD 280–300 / mes' },
     { value: 'crecimiento', price: 480, name: 'Plan Crecimiento Activo', label: 'Plan Crecimiento Activo - USD 460–500 / mes' },
     { value: 'dominio', price: 715, name: 'Plan Dominio Digital', label: 'Plan Dominio Digital - USD 690–740 / mes' },
 ];
+
+const planMicrocopy: Record<string, string> = {
+    impulso: 'Para empezar con constancia y presencia visual.',
+    crecimiento: 'Para marcas que quieren vender y posicionarse mejor.',
+    dominio: 'Para presencia diaria, campañas y contenido constante.',
+};
 
 function hashFnv1aHex(input: string): string {
     let hash = 0x811c9dc5;
@@ -58,6 +75,11 @@ export default function PlanPersonalizado() {
     const [empresaRequerida, setEmpresaRequerida] = useState(false);
     const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
     const navigate = useNavigate();
+    const pageRef = useRef<HTMLDivElement>(null);
+    const homeBtnRef = useRef<HTMLButtonElement>(null);
+    const heroRef = useRef<HTMLElement>(null);
+    const builderRef = useRef<HTMLDivElement>(null);
+    const summaryRef = useRef<HTMLElement>(null);
     const nombreRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const empresaRef = useRef<HTMLInputElement>(null);
@@ -77,6 +99,65 @@ export default function PlanPersonalizado() {
             setPlanError(false);
         }
     }, [preselectedPlan]);
+
+    useLayoutEffect(() => {
+        const page = pageRef.current;
+        const homeBtn = homeBtnRef.current;
+        const hero = heroRef.current;
+        const builder = builderRef.current;
+        const summary = summaryRef.current;
+        if (!page || !hero || !builder || !summary) return;
+
+        const lightAnimations = shouldUseLightAnimations();
+
+        const ctx = gsap.context(() => {
+            const targets = [homeBtn, hero, builder, summary].filter(Boolean) as HTMLElement[];
+
+            if (lightAnimations) {
+                gsap.set(targets, { autoAlpha: 1, y: 0 });
+                return;
+            }
+
+            gsap.set(targets, {
+                autoAlpha: 0,
+                y: 12,
+            });
+
+            const tl = gsap.timeline({
+                defaults: { ease: 'power3.out' },
+            });
+
+            tl.to(homeBtn, {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.36,
+                clearProps: 'opacity,visibility,transform',
+            })
+                .to(
+                    hero,
+                    {
+                        autoAlpha: 1,
+                        y: 0,
+                        duration: 0.44,
+                        clearProps: 'opacity,visibility,transform',
+                    },
+                    '-=0.2',
+                )
+                .to(
+                    [builder, summary],
+                    {
+                        autoAlpha: 1,
+                        y: 0,
+                        duration: 0.42,
+                        stagger: 0.06,
+                        clearProps: 'opacity,visibility,transform',
+                    },
+                    '-=0.26',
+                );
+        }, page);
+
+        return () => ctx.revert();
+    }, []);
 
     const planActual = planesData.find(p => p.value === planSeleccionado);
     const subtotalPlan = planActual?.price || 0;
@@ -254,175 +335,262 @@ _Contacto: ${FRAMEHOUSE_WHATSAPP_DISPLAY} (${FRAMEHOUSE_WHATSAPP_INTERNATIONAL})
     };
 
     return (
-        <div className="plan-page">
+        <div className="plan-page" ref={pageRef}>
             <button 
-              onClick={() => navigate('/')} 
-              className="home-btn" 
-              title="Volver al inicio"
-              type="button"
+                ref={homeBtnRef}
+                onClick={() => navigate('/')} 
+                className="home-btn" 
+                title="Volver al inicio"
+                type="button"
             >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                  </svg>
-                </button>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+            </button>
 
-            <div className="plan-card">
-                <h1 className="plan-title">Crea tu propio plan</h1>
-                
-                <div className="contact-fields">
-                    <div className="form-group">
-                        <label className="form-label">Nombre</label>
-                        <input 
-                            ref={nombreRef}
-                            type="text" 
-                            className={`form-input ${missingRequired && nombre.trim().length === 0 ? 'error-shake' : ''}`}
-                            placeholder="Tu nombre"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
-                            required
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label className="form-label">Email</label>
-                        <input 
-                            ref={emailRef}
-                            type="email" 
-                            className={`form-input ${missingRequired && email.trim().length === 0 ? 'error-shake' : ''}`}
-                            placeholder="tu@email.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label className="form-label">Empresa</label>
-                        <input 
-                            ref={empresaRef}
-                            type="text" 
-                            className={`form-input ${empresaRequerida && empresa.trim().length === 0 ? 'error-shake' : ''}`}
-                            placeholder="Nombre de la empresa"
-                            value={empresa}
-                            onChange={(e) => {
-                                setEmpresa(e.target.value);
-                                setEmpresaRequerida(false);
-                            }}
-                            required
-                        />
-                    </div>
-                </div>
+            <main className="plan-shell">
+                <section className="plan-hero" ref={heroRef}>
+                    <p className="plan-kicker">COTIZACIÓN PERSONALIZADA</p>
+                    <h1 className="plan-title">Diseña un plan para tu marca.</h1>
+                    <p className="plan-subtitle">
+                        Elige un plan base, suma servicios adicionales y envíanos tu cotización. Guardaremos tu solicitud y abriremos WhatsApp para continuar.
+                    </p>
+                </section>
 
-                <div className="form-group">
-                    <label className="form-label">Selecciona tu plan</label>
-                    <select 
-                        ref={planSelectRef}
-                        className={`form-select ${planError ? 'error-shake' : ''}`}
-                        value={planSeleccionado}
-                        onFocus={() => setPlanError(false)}
-                        onChange={(e) => {
-                            setPlanSeleccionado(e.target.value);
-                            setPlanError(false);
-                            
-                        }}
-                    >
-                        <option value="">-- Elige un plan --</option>
-                        {planesData.map(plan => (
-                            <option key={plan.value} value={plan.value}>
-                                {plan.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="products-section">
-                    <h3 className="products-title">Productos adicionales</h3>
-                    <div className="products-grid">
-                        {productosData.map(prod => (
-                            <div 
-                                key={prod.id}
-                                className={`product-item ${productosSeleccionados.includes(prod.id) ? 'selected' : ''}`}
-                                onClick={() => toggleProducto(prod.id)}
-                            >
-                                <div className="product-info">
-                                    <div className="custom-checkbox">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="11" height="11">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                    </div>
-                                    <span className="product-name">{prod.nombre}</span>
+                <section className="plan-layout">
+                    <div className="plan-builder-card" ref={builderRef}>
+                        <div className="plan-section-block">
+                            <div className="plan-section-heading">
+                                <span>01</span>
+                                <div>
+                                    <h2>Datos del cliente</h2>
+                                    <p>Cuéntanos quién eres para registrar tu cotización.</p>
                                 </div>
-                                <span className="product-price">${prod.precio.toLocaleString()}</span>
                             </div>
-                        ))}
-                    </div>
-                </div>
 
-                <div className="summary">
-                    <div className="summary-row">
-                        <span>Plan seleccionado:</span>
-                        <span>{planActual?.name || 'Ninguno'}</span>
-                    </div>
-                    <div className="summary-row">
-                        <span>Subtotal plan:</span>
-                        <span>${subtotalPlan.toLocaleString()}</span>
-                    </div>
-                    <div className="summary-row">
-                        <span>Adicionales:</span>
-                        <span>${subtotalProductos.toLocaleString()}</span>
-                    </div>
-                    <div className="summary-row total">
-                        <span>Total estimado</span>
-                        <span className="summary-price">${total.toLocaleString()}</span>
-                    </div>
-                </div>
+                            <div className="contact-fields">
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="plan-nombre">Nombre</label>
+                                    <input 
+                                        ref={nombreRef}
+                                        id="plan-nombre"
+                                        type="text" 
+                                        className={`form-input ${missingRequired && nombre.trim().length === 0 ? 'error-shake' : ''}`}
+                                        placeholder="Tu nombre"
+                                        value={nombre}
+                                        onChange={(e) => setNombre(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="plan-email">Email</label>
+                                    <input 
+                                        ref={emailRef}
+                                        id="plan-email"
+                                        type="email" 
+                                        className={`form-input ${missingRequired && email.trim().length === 0 ? 'error-shake' : ''}`}
+                                        placeholder="tu@email.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                
+                                <div className="form-group full">
+                                    <label className="form-label" htmlFor="plan-empresa">Empresa</label>
+                                    <input 
+                                        ref={empresaRef}
+                                        id="plan-empresa"
+                                        type="text" 
+                                        className={`form-input ${empresaRequerida && empresa.trim().length === 0 ? 'error-shake' : ''}`}
+                                        placeholder="Nombre de la empresa"
+                                        value={empresa}
+                                        onChange={(e) => {
+                                            setEmpresa(e.target.value);
+                                            setEmpresaRequerida(false);
+                                        }}
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                <button 
-                    type="button" 
-                    className="btn-cotizar"
-                    onClick={enviarDatos}
-                    disabled={enviando}
-                    aria-busy={enviando}
-                >
-                    <span>{enviando ? 'Enviando…' : 'Enviar datos'}</span>
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18" aria-hidden>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                              d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                    </svg>
-                </button>
-                {whatsappUrl && (
-                    <a
-                        className="btn-whatsapp"
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <span>Contactar por WhatsApp</span>
-                        <svg viewBox="0 0 32 32" width="18" height="18" aria-hidden>
-                            <path
-                                fill="currentColor"
-                                d="M19.11 17.21c-.28-.14-1.64-.81-1.89-.9-.25-.09-.44-.14-.62.14-.18.28-.71.9-.87 1.09-.16.18-.32.21-.6.07-.28-.14-1.17-.43-2.24-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.12-.12.28-.32.41-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.5-.07-.14-.62-1.5-.85-2.06-.22-.53-.44-.46-.62-.47h-.53c-.18 0-.46.07-.71.35-.25.28-.92.9-.92 2.2s.94 2.56 1.07 2.73c.14.18 1.84 2.8 4.45 3.93.62.27 1.1.43 1.47.55.62.2 1.18.17 1.62.1.5-.07 1.64-.67 1.87-1.32.23-.64.23-1.19.16-1.32-.07-.14-.25-.21-.53-.35ZM16.04 4.5c-6.08 0-11.03 4.95-11.03 11.03 0 1.94.51 3.84 1.48 5.52l-1.57 5.74 5.88-1.54a10.98 10.98 0 0 0 5.24 1.34h.01c6.08 0 11.03-4.95 11.03-11.03S22.12 4.5 16.04 4.5Zm0 20.15h-.01c-1.66 0-3.28-.44-4.7-1.27l-.34-.2-3.49.91.93-3.41-.22-.35a9.12 9.12 0 0 1-1.4-4.86c0-5.03 4.09-9.12 9.12-9.12s9.12 4.09 9.12 9.12-4.09 9.18-9.01 9.18Z"
-                            />
-                        </svg>
-                    </a>
-                )}
-                {errorFirebase && (
-                    <p className="plan-firebase-error" role="alert">
-                        No se pudo enviar a Firebase: {errorFirebase}. Revisa tu conexión y las reglas de Firestore (escritura en <code>cotizaciones</code>).
-                    </p>
-                )}
-                {missingRequired && (
-                    <p className="mt-3 text-center text-sm text-[#FF6B76]">
-                        Completa nombre y email (revisa el campo resaltado arriba).
-                    </p>
-                )}
-                {empresaRequerida && (
-                    <p className="mt-3 text-center text-sm text-[#FF6B76]">
-                        Indica el nombre de la empresa: así identificamos tu registro en la base de datos.
-                    </p>
-                )}
-            </div>
+                            {missingRequired && (
+                                <p className="field-error" role="alert">
+                                    Completa nombre y email (revisa el campo resaltado).
+                                </p>
+                            )}
+                            {empresaRequerida && (
+                                <p className="field-error" role="alert">
+                                    Indica el nombre de la empresa: así identificamos tu registro en la base de datos.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="plan-section-block">
+                            <div className="plan-section-heading">
+                                <span>02</span>
+                                <div>
+                                    <h2>Plan base</h2>
+                                    <p>Selecciona el punto de partida según el nivel de presencia que necesita tu marca.</p>
+                                </div>
+                            </div>
+
+                            <select
+                                ref={planSelectRef}
+                                className="plan-select-sr-only"
+                                value={planSeleccionado}
+                                onChange={(e) => {
+                                    setPlanSeleccionado(e.target.value);
+                                    setPlanError(false);
+                                }}
+                                tabIndex={-1}
+                                aria-hidden="true"
+                            >
+                                <option value="">-- Elige un plan --</option>
+                                {planesData.map(plan => (
+                                    <option key={plan.value} value={plan.value}>
+                                        {plan.label}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <div
+                                className={`plan-options-grid ${planError ? 'error-shake' : ''}`}
+                                role="radiogroup"
+                                aria-label="Selecciona tu plan"
+                            >
+                                {planesData.map((plan) => (
+                                    <button
+                                        type="button"
+                                        key={plan.value}
+                                        role="radio"
+                                        aria-checked={planSeleccionado === plan.value}
+                                        onClick={() => {
+                                            setPlanSeleccionado(plan.value);
+                                            setPlanError(false);
+                                        }}
+                                        className={`plan-option-card ${planSeleccionado === plan.value ? 'selected' : ''}`}
+                                    >
+                                        <span className="plan-option-name">{plan.name}</span>
+                                        <strong>${plan.price.toLocaleString('es-ES')} USD</strong>
+                                        <small>{planMicrocopy[plan.value]}</small>
+                                    </button>
+                                ))}
+                            </div>
+
+                            {planError && (
+                                <p className="field-error" role="alert">
+                                    Selecciona un plan base para continuar.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="plan-section-block">
+                            <div className="plan-section-heading">
+                                <span>03</span>
+                                <div>
+                                    <h2>Servicios adicionales</h2>
+                                    <p>Suma piezas o servicios extra si tu campaña necesita más fuerza visual.</p>
+                                </div>
+                            </div>
+
+                            <div className="addons-grid">
+                                {productosData.map(prod => (
+                                    <button
+                                        type="button"
+                                        key={prod.id}
+                                        onClick={() => toggleProducto(prod.id)}
+                                        className={`addon-card ${productosSeleccionados.includes(prod.id) ? 'selected' : ''}`}
+                                        aria-pressed={productosSeleccionados.includes(prod.id)}
+                                    >
+                                        <div className="addon-body">
+                                            <span className="addon-check" aria-hidden="true">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="11" height="11">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </span>
+                                            <div className="addon-text">
+                                                <h3>{prod.nombre}</h3>
+                                                <p>{productosDescripcion[prod.id]}</p>
+                                            </div>
+                                        </div>
+                                        <strong>${prod.precio.toLocaleString('es-ES')}</strong>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <aside className="plan-summary-card" ref={summaryRef}>
+                        <h2 className="summary-heading">Resumen de inversión</h2>
+                        <p className="summary-intro">
+                            Revisa tu selección antes de enviar. El total es estimado y puede ajustarse según el alcance final.
+                        </p>
+
+                        <div className="summary-lines">
+                            <div className="summary-row">
+                                <span>Plan elegido</span>
+                                <span>{planActual?.name || 'Ninguno'}</span>
+                            </div>
+                            <div className="summary-row">
+                                <span>Subtotal plan</span>
+                                <span>${subtotalPlan.toLocaleString('es-ES')}</span>
+                            </div>
+                            {productosDetalleSeleccionados.length > 0 && (
+                                <div className="summary-addons">
+                                    <span className="summary-addons-label">Adicionales</span>
+                                    <ul className="summary-addons-list">
+                                        {productosDetalleSeleccionados.map((prod) => (
+                                            <li key={prod.id}>
+                                                <span>{prod.nombre}</span>
+                                                <span>${prod.precio.toLocaleString('es-ES')}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                            <div className="summary-row">
+                                <span>Subtotal adicionales</span>
+                                <span>${subtotalProductos.toLocaleString('es-ES')}</span>
+                            </div>
+                        </div>
+
+                        <div className="summary-total">
+                            <span>Total estimado</span>
+                            <strong>${total.toLocaleString('es-ES')}</strong>
+                        </div>
+
+                        <button 
+                            type="button" 
+                            className="submit-btn"
+                            onClick={enviarDatos}
+                            disabled={enviando}
+                            aria-busy={enviando}
+                        >
+                            {enviando ? 'Enviando...' : 'Enviar cotización'}
+                        </button>
+
+                        {whatsappUrl && (
+                            <a
+                                className="whatsapp-btn"
+                                href={whatsappUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                Continuar por WhatsApp
+                            </a>
+                        )}
+
+                        {errorFirebase && (
+                            <p className="plan-firebase-error" role="alert">
+                                No se pudo enviar a Firebase: {errorFirebase}. Revisa tu conexión y las reglas de Firestore (escritura en <code>cotizaciones</code>).
+                            </p>
+                        )}
+                    </aside>
+                </section>
+            </main>
 
             <div className={`message ${mensajeVisible ? 'show' : ''}`}>
                 <div className="message-title">✅ Listo</div>

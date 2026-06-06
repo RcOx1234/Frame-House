@@ -43,49 +43,49 @@ export default function TestimonialsSection() {
   useEffect(() => {
     const section = sectionRef.current;
     const header = headerRef.current;
-    const cards = cardsRef.current.filter(Boolean);
+    const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
 
     if (!section || !header || cards.length === 0) return;
+
     const lightAnimations = shouldUseLightAnimations();
 
     const ctx = gsap.context(() => {
       gsap.set(header, {
         autoAlpha: 0,
-        y: lightAnimations ? 18 : 28,
+        y: lightAnimations ? 12 : 20,
       });
 
       gsap.set(cards, {
         autoAlpha: 0,
-        y: lightAnimations ? 20 : 34,
-        scale: lightAnimations ? 1 : 0.985,
+        y: lightAnimations ? 12 : 22,
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top 78%',
+          start: 'top 88%',
           once: true,
+        },
+        defaults: {
+          ease: 'power3.out',
         },
       });
 
       tl.to(header, {
         autoAlpha: 1,
         y: 0,
-        duration: lightAnimations ? 0.45 : 0.72,
-        ease: 'power3.out',
-        clearProps: 'transform,opacity,visibility',
+        duration: lightAnimations ? 0.34 : 0.52,
+        clearProps: 'opacity,visibility,transform',
       }).to(
         cards,
         {
           autoAlpha: 1,
           y: 0,
-          scale: 1,
-          duration: lightAnimations ? 0.42 : 0.65,
-          stagger: lightAnimations ? 0.08 : 0.11,
-          ease: 'power3.out',
-          clearProps: 'transform,opacity,visibility',
+          duration: lightAnimations ? 0.32 : 0.48,
+          stagger: lightAnimations ? 0.045 : 0.065,
+          clearProps: 'opacity,visibility,transform',
         },
-        '-=0.2',
+        '-=0.18',
       );
     }, section);
 
@@ -142,7 +142,7 @@ export default function TestimonialsSection() {
                 ref={(el) => {
                   cardsRef.current[index] = el;
                 }}
-                className={`group relative overflow-hidden rounded-[28px] border border-white/10 bg-gradient-to-br from-white/[0.055] via-white/[0.03] to-white/[0.015] p-6 shadow-[0_22px_70px_-42px_rgba(0,0,0,0.75)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D12C3B]/35 md:p-7 lg:min-h-[300px] lg:p-8 ${
+                className={`group relative overflow-hidden rounded-[28px] border border-white/10 bg-gradient-to-br from-white/[0.055] via-white/[0.03] to-white/[0.015] p-6 shadow-[0_22px_70px_-42px_rgba(0,0,0,0.75)] backdrop-blur-sm transform-gpu will-change-transform transition-[border-color,background-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-[#D12C3B]/35 md:p-7 lg:min-h-[300px] lg:p-8 ${
                   index === 1 ? 'lg:translate-y-6' : ''
                 }`}
               >
