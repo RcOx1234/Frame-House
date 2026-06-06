@@ -24,11 +24,11 @@ function typeIcon(type: ProjectType) {
 function ProjectCardSkeleton({ featured }: { featured?: boolean }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.035] ${
-        featured ? 'md:col-span-2' : ''
+      className={`relative overflow-hidden rounded-[26px] border bg-white/[0.035] ${
+        featured ? 'border-[#D12C3B]/25' : 'border-white/10'
       }`}
     >
-      <div className="aspect-[4/3] animate-pulse bg-gradient-to-br from-white/[0.08] via-white/[0.035] to-[#D12C3B]/[0.08]" />
+      <div className="aspect-[4/3] animate-pulse bg-gradient-to-br from-white/[0.08] via-white/[0.035] to-[#D12C3B]/[0.08] md:aspect-[4/3] xl:aspect-[5/4]" />
       <div className="absolute inset-x-4 bottom-4">
         <div className="mb-2 h-3 w-24 rounded-full bg-white/10" />
         <div className="h-5 w-40 rounded-full bg-white/15" />
@@ -289,8 +289,7 @@ export default function TrabajosPage() {
   };
 
   const renderProjectCard = (project: Project, index: number) => {
-    const isFeatured =
-      project.featured || (index === 0 && activeFilter === 'Todos');
+    const isFeatured = index === 0 && activeFilter === 'Todos';
 
     return (
       <button
@@ -298,15 +297,17 @@ export default function TrabajosPage() {
         key={project.id}
         data-project-card
         onClick={() => setSelectedProject(project)}
-        className={`group relative overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.025] text-left shadow-[0_24px_70px_-46px_rgba(0,0,0,0.85)] transition-all duration-300 hover:-translate-y-1 hover:border-[#D12C3B]/35 hover:shadow-[0_28px_80px_-48px_rgba(209,44,59,0.35)] ${
-          isFeatured ? 'md:col-span-2' : ''
+        className={`group relative isolate aspect-[4/3] overflow-hidden rounded-[26px] border bg-white/[0.025] text-left shadow-[0_24px_70px_-46px_rgba(0,0,0,0.85)] [transform:translateZ(0)] [backface-visibility:hidden] will-change-transform transition-[transform,border-color,box-shadow,background-color] duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_-48px_rgba(209,44,59,0.35)] focus:outline-none md:aspect-[4/3] xl:aspect-[5/4] ${
+          isFeatured
+            ? 'border-[#D12C3B]/28 shadow-[0_28px_90px_-54px_rgba(209,44,59,0.45)] hover:border-[#D12C3B]/45'
+            : 'border-white/10 hover:border-[#D12C3B]/35'
         }`}
       >
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="absolute inset-[-1px] overflow-hidden rounded-[26px] [transform:translateZ(0)] [backface-visibility:hidden]">
           <img
             src={project.thumbnail || project.previewImage}
             alt={project.title}
-            className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.045]"
+            className="h-full w-full object-cover [transform:translateZ(0)_scale(1.01)] [backface-visibility:hidden] will-change-transform transition-transform duration-700 group-hover:scale-[1.045]"
             loading="lazy"
             decoding="async"
           />
@@ -318,12 +319,12 @@ export default function TrabajosPage() {
               loop
               playsInline
               preload="none"
-              className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              className="pointer-events-none absolute inset-0 h-full w-full rounded-[26px] object-cover [transform:translateZ(0)_scale(1.01)] [backface-visibility:hidden] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
             />
           ) : null}
 
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/10 to-[#0B0D10]/92" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(209,44,59,0.22),transparent_38%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute inset-[-1px] rounded-[26px] bg-gradient-to-b from-black/10 via-black/10 to-[#0B0D10]/92" />
+          <div className="absolute inset-[-1px] rounded-[26px] bg-[radial-gradient(circle_at_50%_0%,rgba(209,44,59,0.22),transparent_38%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
 
         <div className="absolute inset-0 z-10 flex flex-col justify-between p-4 md:p-5">
@@ -341,12 +342,12 @@ export default function TrabajosPage() {
             <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[#EADCC2]/70">
               {project.category}
             </p>
-            <h3 className="font-heading text-xl font-bold leading-tight text-off-white md:text-2xl">
+            <h3 className="font-heading text-xl font-bold leading-tight text-off-white md:text-[1.45rem] lg:text-[1.6rem]">
               {project.title}
             </h3>
             <div className="mt-3 flex items-center justify-between gap-3">
-              <p className="text-sm text-off-white/70">{project.format || project.type}</p>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#E85A66] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <p className="min-w-0 truncate text-sm text-off-white/70">{project.format || project.type}</p>
+              <span className="hidden items-center gap-1 rounded-full border border-[#D12C3B]/25 bg-[#D12C3B]/10 px-3 py-1 text-xs font-semibold text-[#E85A66] opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:inline-flex">
                 Ver proyecto
                 <ArrowRight className="h-3.5 w-3.5" />
               </span>
@@ -477,7 +478,7 @@ export default function TrabajosPage() {
 
         <section
           ref={gridRef}
-          className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5"
+          className="mt-8 grid grid-cols-1 items-start gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6"
         >
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
