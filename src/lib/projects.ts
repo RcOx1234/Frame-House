@@ -28,30 +28,38 @@ export type Project = {
   format: string;
   siteUrl?: string;
   featured?: boolean;
+  visible?: boolean;
+  instagramUrl?: string;
+  facebookUrl?: string;
 };
 
 export async function getProjects(): Promise<Project[]> {
   const snapshot = await getDocs(collection(db, 'projects'));
 
-  return snapshot.docs.map((doc) => {
-    const data = doc.data() as Partial<Project>;
-    return {
-      id: doc.id,
-      title: data.title ?? '',
-      client: data.client ?? '',
-      type: data.type ?? 'otros',
-      category: data.category ?? 'Otros',
-      thumbnail: data.thumbnail ?? '',
-      previewImage: data.previewImage,
-      previewVideo: data.previewVideo,
-      mediaItems: Array.isArray(data.mediaItems) ? (data.mediaItems as ProjectMediaItem[]) : undefined,
-      duration: data.duration,
-      platform: data.platform ?? '',
-      description: data.description ?? '',
-      tags: Array.isArray(data.tags) ? data.tags : [],
-      format: data.format ?? '',
-      siteUrl: data.siteUrl,
-      featured: Boolean(data.featured)
-    };
-  });
+  return snapshot.docs
+    .map((doc) => {
+      const data = doc.data() as Partial<Project>;
+      return {
+        id: doc.id,
+        title: data.title ?? '',
+        client: data.client ?? '',
+        type: data.type ?? 'otros',
+        category: data.category ?? 'Otros',
+        thumbnail: data.thumbnail ?? '',
+        previewImage: data.previewImage,
+        previewVideo: data.previewVideo,
+        mediaItems: Array.isArray(data.mediaItems) ? (data.mediaItems as ProjectMediaItem[]) : undefined,
+        duration: data.duration,
+        platform: data.platform ?? '',
+        description: data.description ?? '',
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        format: data.format ?? '',
+        siteUrl: data.siteUrl,
+        featured: Boolean(data.featured),
+        visible: data.visible,
+        instagramUrl: data.instagramUrl,
+        facebookUrl: data.facebookUrl,
+      };
+    })
+    .filter((project) => project.visible !== false);
 }

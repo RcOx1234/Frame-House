@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Camera, Check, Copy, ExternalLink, Globe, Play, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Camera, Check, Copy, ExternalLink, Facebook, Globe, Instagram, Play, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -323,7 +323,7 @@ export default function TrabajosPage() {
             />
           ) : null}
 
-          <div className="absolute inset-[-1px] rounded-[26px] bg-gradient-to-b from-black/10 via-black/10 to-[#0B0D10]/92" />
+          <div className="absolute inset-[-1px] rounded-[26px] bg-[linear-gradient(180deg,rgba(11,13,16,0.04)_0%,rgba(11,13,16,0.10)_36%,rgba(18,7,10,0.72)_68%,rgba(11,13,16,0.97)_100%)]" />
           <div className="absolute inset-[-1px] rounded-[26px] bg-[radial-gradient(circle_at_50%_0%,rgba(209,44,59,0.22),transparent_38%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
 
@@ -342,7 +342,7 @@ export default function TrabajosPage() {
             <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[#EADCC2]/70">
               {project.category}
             </p>
-            <h3 className="font-heading text-xl font-bold leading-tight text-off-white md:text-[1.45rem] lg:text-[1.6rem]">
+            <h3 className="font-heading text-xl font-bold leading-tight text-off-white [text-shadow:0_2px_10px_rgba(0,0,0,0.95)] md:text-[1.45rem] lg:text-[1.6rem]">
               {project.title}
             </h3>
             <div className="mt-3 flex items-center justify-between gap-3">
@@ -613,7 +613,7 @@ export default function TrabajosPage() {
                 {selectedProject.tags.map((tag) => `#${tag}`).join(' ')}
               </p>
 
-              <div className="mt-auto flex flex-wrap gap-3 pt-7">
+              <div className="mt-auto flex flex-wrap items-center gap-3 pt-7">
                 <button
                   type="button"
                   onClick={() => handleCopyReference(selectedProject.id)}
@@ -623,15 +623,17 @@ export default function TrabajosPage() {
                   {copiedRef === selectedProject.id ? 'Copiado' : `Copiar REF (${selectedProject.id})`}
                 </button>
                 {selectedProject.type === 'web' ? (
-                  <a
-                    href={selectedProject.siteUrl ?? 'https://instagram.com'}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
-                  >
-                    Visitar sitio
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
+                  selectedProject.siteUrl ? (
+                    <a
+                      href={selectedProject.siteUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
+                    >
+                      Visitar sitio
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  ) : null
                 ) : (
                   <a
                     href={buildWhatsAppUrl(
@@ -645,6 +647,30 @@ export default function TrabajosPage() {
                     <ExternalLink className="h-4 w-4" />
                   </a>
                 )}
+                {selectedProject.instagramUrl ? (
+                  <a
+                    href={selectedProject.instagramUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label="Ver proyecto en Instagram"
+                    title="Ver proyecto en Instagram"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                  >
+                    <Instagram className="h-4 w-4" />
+                  </a>
+                ) : null}
+                {selectedProject.facebookUrl ? (
+                  <a
+                    href={selectedProject.facebookUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label="Ver proyecto en Facebook"
+                    title="Ver proyecto en Facebook"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                  >
+                    <Facebook className="h-4 w-4" />
+                  </a>
+                ) : null}
               </div>
             </div>
           </div>
