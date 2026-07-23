@@ -9,6 +9,7 @@ export type ProjectMediaItem = {
   kind: 'image' | 'video';
   url: string;
   label?: string;
+  displayMode?: 'cover' | 'contain';
 };
 
 export type Project = {
@@ -31,6 +32,7 @@ export type Project = {
   visible?: boolean;
   instagramUrl?: string;
   facebookUrl?: string;
+  tiktokUrl?: string;
 };
 
 export async function getProjects(): Promise<Project[]> {
@@ -59,6 +61,7 @@ export async function getProjects(): Promise<Project[]> {
         visible: data.visible,
         instagramUrl: data.instagramUrl,
         facebookUrl: data.facebookUrl,
+        tiktokUrl: data.tiktokUrl,
       };
     })
     .filter((project) => project.visible !== false);

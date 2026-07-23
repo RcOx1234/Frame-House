@@ -14,7 +14,8 @@ export function getProjectMediaItems(project: Project): ProjectMediaItem[] {
         id: item.id,
         kind: item.kind,
         url: item.url,
-        label: item.label
+        label: item.label,
+        displayMode: item.displayMode,
       }));
   }
 

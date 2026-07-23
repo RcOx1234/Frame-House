@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Camera, Check, Copy, ExternalLink, Facebook, Globe, Instagram, Play, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Camera, ExternalLink, Facebook, Globe, Instagram, Play, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Toaster, toast } from 'sonner';
 import { shouldUseLightAnimations } from '../lib/motion';
 import { getProjects, type Project } from '../lib/projects';
 import { ProjectMediaCarousel } from '../components/ProjectMediaCarousel';
@@ -14,6 +13,19 @@ type FilterType = 'Todos' | 'Videos' | 'Webs' | 'Contenido Social' | 'Branding /
 import { buildWhatsAppUrl } from '../config/contact';
 const FILTERS: FilterType[] = ['Todos', 'Videos', 'Webs', 'Contenido Social', 'Branding / Diseño', 'Fotografía', 'Otros'];
 gsap.registerPlugin(ScrollTrigger);
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+    >
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15.2a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.75a8.18 8.18 0 0 0 4.76 1.52V6.84a4.85 4.85 0 0 1-1-.15z" />
+    </svg>
+  );
+}
 
 function typeIcon(type: ProjectType) {
   if (type === 'video' || type === 'social') return <Play className="w-4 h-4" />;
@@ -44,7 +56,6 @@ export default function TrabajosPage() {
   const [error, setError] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [visibleCount, setVisibleCount] = useState(6);
-  const [copiedRef, setCopiedRef] = useState<string | null>(null);
   const [pageVisible, setPageVisible] = useState(false);
   const pageRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
@@ -66,6 +77,10 @@ export default function TrabajosPage() {
 
   const visibleProjects = filteredProjects.slice(0, visibleCount);
   const canLoadMore = visibleCount < filteredProjects.length;
+  const modalInstagramUrl = selectedProject?.instagramUrl?.trim() ?? '';
+  const modalFacebookUrl = selectedProject?.facebookUrl?.trim() ?? '';
+  const modalTiktokUrl = selectedProject?.tiktokUrl?.trim() ?? '';
+  const hasModalSocialLinks = Boolean(modalInstagramUrl || modalFacebookUrl || modalTiktokUrl);
 
   useEffect(() => {
     async function load() {
@@ -277,17 +292,6 @@ export default function TrabajosPage() {
     );
   }, [activeFilter, loading]);
 
-  const handleCopyReference = async (ref: string) => {
-    try {
-      await navigator.clipboard.writeText(ref);
-      setCopiedRef(ref);
-      toast.success('Referencia copiada');
-      window.setTimeout(() => setCopiedRef(null), 2000);
-    } catch {
-      toast.error('No se pudo copiar la referencia');
-    }
-  };
-
   const renderProjectCard = (project: Project, index: number) => {
     const isFeatured = index === 0 && activeFilter === 'Todos';
 
@@ -375,17 +379,6 @@ export default function TrabajosPage() {
         aria-hidden
       />
 
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          style: {
-            background: '#0B0D10',
-            border: '1px solid rgba(209, 44, 59, 0.35)',
-            color: '#F3F1EA'
-          }
-        }}
-      />
-
       <main className="relative z-10 mx-auto max-w-[1440px] px-6 py-10 md:px-[7vw] md:py-14 lg:py-16">
         <header
           ref={headerRef}
@@ -416,7 +409,7 @@ export default function TrabajosPage() {
                 Galería Frame House
               </p>
               <p className="mt-3 text-sm leading-relaxed text-muted-warm">
-                Usa esta página como referencia visual. Abre un proyecto, copia su referencia y cotiza algo con una dirección parecida.
+                Explora cada proyecto, conoce sus detalles y visita las redes donde fue publicado.
               </p>
 
               <div className="mt-5 flex flex-wrap gap-2">
@@ -613,22 +606,57 @@ export default function TrabajosPage() {
                 {selectedProject.tags.map((tag) => `#${tag}`).join(' ')}
               </p>
 
-              <div className="mt-auto flex flex-wrap items-center gap-3 pt-7">
-                <button
-                  type="button"
-                  onClick={() => handleCopyReference(selectedProject.id)}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/35 px-4 py-2 text-sm text-off-white transition hover:border-[#D12C3B]/60"
-                >
-                  {copiedRef === selectedProject.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  {copiedRef === selectedProject.id ? 'Copiado' : `Copiar REF (${selectedProject.id})`}
-                </button>
+              <div className="mt-auto flex flex-col gap-3 pt-7">
+                {hasModalSocialLinks ? (
+                  <div className="flex w-full items-center justify-between gap-3 rounded-full border border-white/20 bg-black/35 px-4 py-2">
+                    <span className="shrink-0 text-sm text-off-white/70">Ver en redes</span>
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      {modalInstagramUrl ? (
+                        <a
+                          href={modalInstagramUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          aria-label="Ver proyecto en Instagram"
+                          title="Ver proyecto en Instagram"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                        >
+                          <Instagram className="h-4 w-4" />
+                        </a>
+                      ) : null}
+                      {modalFacebookUrl ? (
+                        <a
+                          href={modalFacebookUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          aria-label="Ver proyecto en Facebook"
+                          title="Ver proyecto en Facebook"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                        >
+                          <Facebook className="h-4 w-4" />
+                        </a>
+                      ) : null}
+                      {modalTiktokUrl ? (
+                        <a
+                          href={modalTiktokUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          aria-label="Ver proyecto en TikTok"
+                          title="Ver proyecto en TikTok"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                        >
+                          <TikTokIcon className="h-4 w-4" />
+                        </a>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
                 {selectedProject.type === 'web' ? (
                   selectedProject.siteUrl ? (
                     <a
                       href={selectedProject.siteUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
                     >
                       Visitar sitio
                       <ExternalLink className="h-4 w-4" />
@@ -641,36 +669,12 @@ export default function TrabajosPage() {
                     )}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
                   >
                     WhatsApp directo
                     <ExternalLink className="h-4 w-4" />
                   </a>
                 )}
-                {selectedProject.instagramUrl ? (
-                  <a
-                    href={selectedProject.instagramUrl}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    aria-label="Ver proyecto en Instagram"
-                    title="Ver proyecto en Instagram"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
-                  >
-                    <Instagram className="h-4 w-4" />
-                  </a>
-                ) : null}
-                {selectedProject.facebookUrl ? (
-                  <a
-                    href={selectedProject.facebookUrl}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    aria-label="Ver proyecto en Facebook"
-                    title="Ver proyecto en Facebook"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
-                  >
-                    <Facebook className="h-4 w-4" />
-                  </a>
-                ) : null}
               </div>
             </div>
           </div>
