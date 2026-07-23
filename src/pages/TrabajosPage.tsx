@@ -77,6 +77,10 @@ export default function TrabajosPage() {
 
   const visibleProjects = filteredProjects.slice(0, visibleCount);
   const canLoadMore = visibleCount < filteredProjects.length;
+  const modalInstagramUrl = selectedProject?.instagramUrl?.trim() ?? '';
+  const modalFacebookUrl = selectedProject?.facebookUrl?.trim() ?? '';
+  const modalTiktokUrl = selectedProject?.tiktokUrl?.trim() ?? '';
+  const hasModalSocialLinks = Boolean(modalInstagramUrl || modalFacebookUrl || modalTiktokUrl);
 
   useEffect(() => {
     async function load() {
@@ -602,42 +606,49 @@ export default function TrabajosPage() {
                 {selectedProject.tags.map((tag) => `#${tag}`).join(' ')}
               </p>
 
-              <div className="mt-auto flex flex-wrap items-center gap-3 pt-7">
-                {selectedProject.instagramUrl?.trim() ? (
-                  <a
-                    href={selectedProject.instagramUrl.trim()}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    aria-label="Ver proyecto en Instagram"
-                    title="Ver proyecto en Instagram"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
-                  >
-                    <Instagram className="h-4 w-4" />
-                  </a>
-                ) : null}
-                {selectedProject.facebookUrl?.trim() ? (
-                  <a
-                    href={selectedProject.facebookUrl.trim()}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    aria-label="Ver proyecto en Facebook"
-                    title="Ver proyecto en Facebook"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
-                  >
-                    <Facebook className="h-4 w-4" />
-                  </a>
-                ) : null}
-                {selectedProject.tiktokUrl?.trim() ? (
-                  <a
-                    href={selectedProject.tiktokUrl.trim()}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    aria-label="Ver proyecto en TikTok"
-                    title="Ver proyecto en TikTok"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
-                  >
-                    <TikTokIcon className="h-4 w-4" />
-                  </a>
+              <div className="mt-auto flex flex-col gap-3 pt-7">
+                {hasModalSocialLinks ? (
+                  <div className="flex w-full items-center justify-between gap-3 rounded-full border border-white/20 bg-black/35 px-4 py-2">
+                    <span className="shrink-0 text-sm text-off-white/70">Ver en redes</span>
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      {modalInstagramUrl ? (
+                        <a
+                          href={modalInstagramUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          aria-label="Ver proyecto en Instagram"
+                          title="Ver proyecto en Instagram"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                        >
+                          <Instagram className="h-4 w-4" />
+                        </a>
+                      ) : null}
+                      {modalFacebookUrl ? (
+                        <a
+                          href={modalFacebookUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          aria-label="Ver proyecto en Facebook"
+                          title="Ver proyecto en Facebook"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                        >
+                          <Facebook className="h-4 w-4" />
+                        </a>
+                      ) : null}
+                      {modalTiktokUrl ? (
+                        <a
+                          href={modalTiktokUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          aria-label="Ver proyecto en TikTok"
+                          title="Ver proyecto en TikTok"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                        >
+                          <TikTokIcon className="h-4 w-4" />
+                        </a>
+                      ) : null}
+                    </div>
+                  </div>
                 ) : null}
                 {selectedProject.type === 'web' ? (
                   selectedProject.siteUrl ? (
@@ -645,7 +656,7 @@ export default function TrabajosPage() {
                       href={selectedProject.siteUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
                     >
                       Visitar sitio
                       <ExternalLink className="h-4 w-4" />
@@ -658,7 +669,7 @@ export default function TrabajosPage() {
                     )}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#D12C3B] bg-[#D12C3B] px-4 py-2 text-sm font-semibold text-off-white transition hover:bg-[#B51823]"
                   >
                     WhatsApp directo
                     <ExternalLink className="h-4 w-4" />
