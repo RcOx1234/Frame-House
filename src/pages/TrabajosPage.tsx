@@ -323,7 +323,7 @@ export default function TrabajosPage() {
             />
           ) : null}
 
-          <div className="absolute inset-[-1px] rounded-[26px] bg-gradient-to-b from-black/10 via-black/10 to-[#0B0D10]/92" />
+          <div className="absolute inset-[-1px] rounded-[26px] bg-[linear-gradient(180deg,rgba(11,13,16,0.04)_0%,rgba(11,13,16,0.10)_36%,rgba(18,7,10,0.72)_68%,rgba(11,13,16,0.97)_100%)]" />
           <div className="absolute inset-[-1px] rounded-[26px] bg-[radial-gradient(circle_at_50%_0%,rgba(209,44,59,0.22),transparent_38%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
 
@@ -342,7 +342,7 @@ export default function TrabajosPage() {
             <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[#EADCC2]/70">
               {project.category}
             </p>
-            <h3 className="font-heading text-xl font-bold leading-tight text-off-white md:text-[1.45rem] lg:text-[1.6rem]">
+            <h3 className="font-heading text-xl font-bold leading-tight text-off-white [text-shadow:0_2px_10px_rgba(0,0,0,0.95)] md:text-[1.45rem] lg:text-[1.6rem]">
               {project.title}
             </h3>
             <div className="mt-3 flex items-center justify-between gap-3">
