@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Camera, ExternalLink, Facebook, Globe, Instagram, Play, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Camera, ExternalLink, Facebook, Globe, Instagram, Play, Share2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -554,7 +554,7 @@ export default function TrabajosPage() {
         >
           <div
             ref={modalPanelRef}
-            className="relative grid w-full max-w-6xl overflow-hidden rounded-[30px] border border-white/10 bg-[#0B0D10] shadow-[0_40px_100px_rgba(0,0,0,0.75)] md:max-h-[90vh] lg:grid-cols-[1.2fr_0.8fr]"
+            className="relative grid w-full max-w-6xl overflow-hidden rounded-[30px] border border-white/10 bg-[#0B0D10] shadow-[0_40px_100px_rgba(0,0,0,0.75)] lg:h-[90vh] lg:max-h-[90vh] lg:min-h-0 lg:grid-cols-[1.2fr_0.8fr] lg:grid-rows-1"
             onClick={(event) => event.stopPropagation()}
           >
             <button
@@ -566,50 +566,55 @@ export default function TrabajosPage() {
               <X className="h-4 w-4" />
             </button>
 
-            <div className="relative min-h-[240px] bg-black md:min-h-[320px] lg:min-h-0">
+            <div className="relative min-h-[240px] bg-black md:min-h-[320px] lg:min-h-0 lg:overflow-hidden">
               <ProjectMediaCarousel project={selectedProject} />
             </div>
 
-            <div className="flex flex-col overflow-y-auto p-6 md:p-8">
-              <div className="mb-4 flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-xs text-off-white/85">
-                  {selectedProject.client}
-                </span>
-                <span className="rounded-full border border-[#D12C3B]/30 bg-[#D12C3B]/10 px-3 py-1 text-xs text-[#E85A66]">
-                  {selectedProject.category}
-                </span>
-              </div>
+            <div className="flex flex-col p-6 md:p-8 lg:flex lg:min-h-0 lg:flex-col lg:overflow-hidden">
+              <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-3 lg:[scrollbar-width:thin] lg:[scrollbar-color:rgba(138,106,110,0.5)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#8A6A6E]/45 hover:[&::-webkit-scrollbar-thumb]:bg-[#D12C3B]/40">
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-xs text-off-white/85">
+                    {selectedProject.client}
+                  </span>
+                  <span className="rounded-full border border-[#D12C3B]/30 bg-[#D12C3B]/10 px-3 py-1 text-xs text-[#E85A66]">
+                    {selectedProject.category}
+                  </span>
+                </div>
 
-              <h3 className="font-heading text-2xl font-bold text-off-white md:text-3xl">{selectedProject.title}</h3>
-              <div className="mt-4 space-y-2 text-sm text-off-white/75">
-                <p>
-                  <span className="font-semibold text-off-white">Cliente:</span> {selectedProject.client}
-                </p>
-                <p>
-                  <span className="font-semibold text-off-white">Tipo:</span> {selectedProject.type}
-                </p>
-                <p>
-                  <span className="font-semibold text-off-white">Formato:</span> {selectedProject.format}
-                </p>
-                {selectedProject.duration ? (
+                <h3 className="font-heading text-2xl font-bold text-off-white md:text-3xl">{selectedProject.title}</h3>
+                <div className="mt-4 space-y-2 text-sm text-off-white/75">
                   <p>
-                    <span className="font-semibold text-off-white">Duración:</span> {selectedProject.duration}
+                    <span className="font-semibold text-off-white">Cliente:</span> {selectedProject.client}
                   </p>
-                ) : null}
-                <p>
-                  <span className="font-semibold text-off-white">Plataforma:</span> {selectedProject.platform}
+                  <p>
+                    <span className="font-semibold text-off-white">Tipo:</span> {selectedProject.type}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-off-white">Formato:</span> {selectedProject.format}
+                  </p>
+                  {selectedProject.duration ? (
+                    <p>
+                      <span className="font-semibold text-off-white">Duración:</span> {selectedProject.duration}
+                    </p>
+                  ) : null}
+                  <p>
+                    <span className="font-semibold text-off-white">Plataforma:</span> {selectedProject.platform}
+                  </p>
+                </div>
+
+                <p className="mt-5 text-sm text-off-white/80 md:text-base">{selectedProject.description}</p>
+                <p className="mt-4 text-xs text-[#E85A66] md:text-sm">
+                  {selectedProject.tags.map((tag) => `#${tag}`).join(' ')}
                 </p>
               </div>
 
-              <p className="mt-5 text-sm text-off-white/80 md:text-base">{selectedProject.description}</p>
-              <p className="mt-4 text-xs text-[#E85A66] md:text-sm">
-                {selectedProject.tags.map((tag) => `#${tag}`).join(' ')}
-              </p>
-
-              <div className="mt-auto flex flex-col gap-3 pt-7">
+              <div className="mt-auto flex shrink-0 flex-col gap-3 pt-7">
                 {hasModalSocialLinks ? (
-                  <div className="flex w-full items-center justify-between gap-3 rounded-full border border-white/20 bg-black/35 px-4 py-2">
-                    <span className="shrink-0 text-sm text-off-white/70">Ver en redes</span>
+                  <div className="flex w-full items-center justify-between gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-black/45 via-[#0B0D10]/55 to-[#12070A]/40 px-4 py-2.5">
+                    <span className="inline-flex shrink-0 items-center gap-2 text-sm text-off-white/70">
+                      <Share2 className="h-3.5 w-3.5" aria-hidden />
+                      Ver en redes
+                    </span>
                     <div className="flex flex-wrap items-center justify-end gap-2">
                       {modalInstagramUrl ? (
                         <a
@@ -618,7 +623,7 @@ export default function TrabajosPage() {
                           rel="noreferrer noopener"
                           aria-label="Ver proyecto en Instagram"
                           title="Ver proyecto en Instagram"
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-[#C98BB8] transition hover:border-white/25 hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C98BB8]/50"
                         >
                           <Instagram className="h-4 w-4" />
                         </a>
@@ -630,7 +635,7 @@ export default function TrabajosPage() {
                           rel="noreferrer noopener"
                           aria-label="Ver proyecto en Facebook"
                           title="Ver proyecto en Facebook"
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-[#8FA8D8] transition hover:border-white/25 hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8FA8D8]/50"
                         >
                           <Facebook className="h-4 w-4" />
                         </a>
@@ -642,9 +647,9 @@ export default function TrabajosPage() {
                           rel="noreferrer noopener"
                           aria-label="Ver proyecto en TikTok"
                           title="Ver proyecto en TikTok"
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D12C3B]/45 bg-[#D12C3B]/15 text-off-white transition hover:border-[#D12C3B]/75 hover:bg-[#D12C3B]/28"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-off-white transition hover:border-white/25 hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                         >
-                          <TikTokIcon className="h-4 w-4" />
+                          <TikTokIcon className="h-4 w-4 [filter:drop-shadow(0.5px_0_0_rgba(105,220,230,0.35))_drop-shadow(-0.5px_0_0_rgba(230,80,100,0.3))]" />
                         </a>
                       ) : null}
                     </div>

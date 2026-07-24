@@ -24,7 +24,8 @@ export function ProjectMediaSlide({ item, title, className, preferSound = false 
   const baseClassName = className ?? 'h-full w-full object-cover';
 
   if (item.kind === 'video') {
-    return (
+    const isContain = item.displayMode === 'contain';
+    const video = (
       <video
         key={item.url}
         ref={videoRef}
@@ -54,9 +55,31 @@ export function ProjectMediaSlide({ item, title, className, preferSound = false 
             }
           }
         }}
-        className={baseClassName}
+        className={isContain ? 'relative z-10 h-full w-full object-contain' : baseClassName}
       />
     );
+
+    if (isContain) {
+      return (
+        <div className="relative h-full w-full overflow-hidden">
+          <div
+            className="absolute inset-0 bg-[linear-gradient(155deg,#0B0D10_0%,#12070A_42%,#09090B_72%,#0B0D10_100%)]"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_22%_18%,rgba(209,44,59,0.14),transparent_48%),radial-gradient(ellipse_at_78%_82%,rgba(177,24,35,0.1),transparent_44%)]"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_38%,rgba(0,0,0,0.45)_100%)]"
+            aria-hidden
+          />
+          {video}
+        </div>
+      );
+    }
+
+    return video;
   }
 
   if (imageFailed) {
