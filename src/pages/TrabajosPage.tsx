@@ -554,7 +554,7 @@ export default function TrabajosPage() {
         >
           <div
             ref={modalPanelRef}
-            className="relative grid w-full max-w-6xl overflow-hidden rounded-[30px] border border-white/10 bg-[#0B0D10] shadow-[0_40px_100px_rgba(0,0,0,0.75)] lg:max-h-[90vh] lg:grid-cols-[1.2fr_0.8fr]"
+            className="relative grid w-full max-w-6xl overflow-hidden rounded-[30px] border border-white/10 bg-[#0B0D10] shadow-[0_40px_100px_rgba(0,0,0,0.75)] lg:h-[90vh] lg:max-h-[90vh] lg:min-h-0 lg:grid-cols-[1.2fr_0.8fr] lg:grid-rows-1"
             onClick={(event) => event.stopPropagation()}
           >
             <button
@@ -566,12 +566,12 @@ export default function TrabajosPage() {
               <X className="h-4 w-4" />
             </button>
 
-            <div className="relative min-h-[240px] bg-black md:min-h-[320px] lg:min-h-0">
+            <div className="relative min-h-[240px] bg-black md:min-h-[320px] lg:min-h-0 lg:overflow-hidden">
               <ProjectMediaCarousel project={selectedProject} />
             </div>
 
-            <div className="flex min-h-0 flex-col p-6 md:p-8">
-              <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-3">
+            <div className="flex flex-col p-6 md:p-8 lg:flex lg:min-h-0 lg:flex-col lg:overflow-hidden">
+              <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-3 lg:[scrollbar-width:thin] lg:[scrollbar-color:rgba(138,106,110,0.5)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#8A6A6E]/45 hover:[&::-webkit-scrollbar-thumb]:bg-[#D12C3B]/40">
                 <div className="mb-4 flex flex-wrap items-center gap-2">
                   <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-xs text-off-white/85">
                     {selectedProject.client}
